@@ -25,12 +25,12 @@ import org.slf4j.LoggerFactory;
  * Course   (Accuracy of 1 degree)
  */
 public class PositionReport extends InmarsatBody {
-	private final static Logger LOGGER = LoggerFactory.getLogger(PositionReport.class);
-	public final static int DATA_LENGTH = 20;
+	private static final Logger LOGGER = LoggerFactory.getLogger(PositionReport.class);
+	public static final int DATA_LENGTH = 20;
 
 	private PositionReport() {}
 
-	public static PositionReport createPositionReport(byte[] body) throws IllegalArgumentException {
+	public static PositionReport createPositionReport(byte[] body) {
 		PositionReport posReport = new PositionReport();
 		posReport.body = body;
 		if (!posReport.validate()) {
@@ -40,8 +40,7 @@ public class PositionReport extends InmarsatBody {
 		return posReport;
 	}
 
-	public static PositionReport createPositionReport(PositionReportData positionReportData)
-			throws IllegalArgumentException {
+	public static PositionReport createPositionReport(PositionReportData positionReportData) {
 		PositionReport posReport = new PositionReport();
 
 		byte[] body = new byte[DATA_LENGTH];

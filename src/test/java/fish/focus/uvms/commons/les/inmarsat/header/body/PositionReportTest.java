@@ -147,12 +147,12 @@ public class PositionReportTest {
 
 	@Test
 	public void getSpeed() {
-		assertEquals(positionReportData.getSpeed(), positionReport.getSpeed(), 0);
+		assertEquals("Speed should be same", positionReportData.getSpeed(), positionReport.getSpeed(), 0);
 	}
 
 	@Test
 	public void getCourse() {
-		assertEquals(positionReportData.getCourse(), positionReport.getCourse(), 0);
+		assertEquals("Course should be same", positionReportData.getCourse(), positionReport.getCourse(), 0);
 	}
 
 	@Test

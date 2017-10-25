@@ -118,6 +118,7 @@ public class HeaderStructBuilder {
 	}
 
 	public HeaderStruct createHeaderStruct() {
-		return new HeaderStruct(presentation, failure, delivery, satIdAndLesId, dataLength, dnid, memberNo, mesMobNo);
+		return new HeaderStruct(new HeaderStruct.Part1(presentation, failure, delivery, satIdAndLesId, dataLength),
+				new HeaderStruct.Part2(dnid, memberNo, mesMobNo));
 	}
 }

@@ -16,15 +16,11 @@ import java.nio.charset.StandardCharsets;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public final class InmarsatDefintion {
-
 	public static final Charset API_CHARSET = StandardCharsets.US_ASCII;
-
-	// API Misc. definitions 
+	// API Misc. definitions
 	public static final int API_SOH = 1;
 	public static final int API_EOH = 2;
-
 	public static final String API_LEAD_TEXT = "T&T";
-
 	//API Reason code definitions
 	public static final int API_UNKNOWN_ERROR = 0x00;
 	public static final int API_MES_UNKNOWN = 0x01;
@@ -37,4 +33,6 @@ public final class InmarsatDefintion {
 	public static final int API_MSG_DELETED_BY_OPERATOR = 0x12;
 	public static final int API_MSG_DELETED_BY_USER = 0x13;
 	public static final int API_MSG_OR_NOT_COVERED = 0x14;
+
+	private InmarsatDefintion() {}
 }

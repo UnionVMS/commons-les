@@ -3,14 +3,8 @@ package fish.focus.uvms.commons.les.inmarsat.header.body;
 public class PositionReportData {
 
 	private final int dataReportFormat;
-	private final int latHemi;
-	private final int latDeg;
-	private final int latMin;
-	private final int latMinFrac;
-	private final int longHemi;
-	private final int longDeg;
-	private final int longMin;
-	private final int longMinFrac;
+	private final Position latPosition;
+	private final Position longPosition;
 	private final int mem;
 	private final int monthRes;
 	private final int day;
@@ -19,25 +13,18 @@ public class PositionReportData {
 	private final double speed;
 	private final int course;
 
-	private PositionReportData(int dataReportFormat, int latHemi, int latDeg, int latMin, int latMinFrac, int longHemi,
-			int longDeg, int longMin, int longMinFrac, int mem, int monthRes, int day, int hour, int minute,
-			double speed, int course) {
+	private PositionReportData(int dataReportFormat, Position latPosition, Position longPosition, int mem,
+			PositionDate positionDate, SpeedAndCourse speedAndCourse) {
 		this.dataReportFormat = dataReportFormat;
-		this.latHemi = latHemi;
-		this.latDeg = latDeg;
-		this.latMin = latMin;
-		this.latMinFrac = latMinFrac;
-		this.longHemi = longHemi;
-		this.longDeg = longDeg;
-		this.longMin = longMin;
-		this.longMinFrac = longMinFrac;
+		this.latPosition = latPosition;
+		this.longPosition = longPosition;
 		this.mem = mem;
-		this.monthRes = monthRes;
-		this.day = day;
-		this.hour = hour;
-		this.minute = minute;
-		this.speed = speed;
-		this.course = course;
+		this.monthRes = positionDate.getMonthRes();
+		this.day = positionDate.getDay();
+		this.hour = positionDate.getHour();
+		this.minute = positionDate.getMinute();
+		this.speed = speedAndCourse.getSpeed();
+		this.course = speedAndCourse.getCourse();
 	}
 
 	public int getDataReportFormat() {
@@ -45,35 +32,35 @@ public class PositionReportData {
 	}
 
 	public int getLatHemi() {
-		return latHemi;
+		return latPosition.getHemi();
 	}
 
 	public int getLatDeg() {
-		return latDeg;
+		return latPosition.getDeg();
 	}
 
 	public int getLatMin() {
-		return latMin;
+		return latPosition.getMin();
 	}
 
 	public int getLatMinFrac() {
-		return latMinFrac;
+		return latPosition.getMinFrac();
 	}
 
 	public int getLongHemi() {
-		return longHemi;
+		return longPosition.getHemi();
 	}
 
 	public int getLongDeg() {
-		return longDeg;
+		return longPosition.getDeg();
 	}
 
 	public int getLongMin() {
-		return longMin;
+		return longPosition.getMin();
 	}
 
 	public int getLongMinFrac() {
-		return longMinFrac;
+		return longPosition.getMinFrac();
 	}
 
 	public int getMem() {
@@ -204,8 +191,9 @@ public class PositionReportData {
 		}
 
 		public PositionReportData createPositionReportData() {
-			return new PositionReportData(dataReportFormat, latHemi, latDeg, latMin, latMinFrac, longHemi, longDeg,
-					longMin, longMinFrac, mem, monthRes, day, hour, minute, speed, course);
+			return new PositionReportData(dataReportFormat, new Position(latHemi, latDeg, latMin, latMinFrac),
+					new Position(longHemi, longDeg, longMin, longMinFrac), mem,
+					new PositionDate(monthRes, day, hour, minute), new SpeedAndCourse(speed, course));
 		}
 	}
 }

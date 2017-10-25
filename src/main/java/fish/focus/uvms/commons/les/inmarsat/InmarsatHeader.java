@@ -15,7 +15,7 @@ public class InmarsatHeader {
 
 	private InmarsatHeader() {}
 
-	public static InmarsatHeader createHeader(byte[] header) throws IllegalArgumentException {
+	public static InmarsatHeader createHeader(byte[] header) {
 		InmarsatHeader iHeader = new InmarsatHeader();
 		iHeader.header = header;
 		if (iHeader.isValidHeader()) {
@@ -28,7 +28,7 @@ public class InmarsatHeader {
 
 	}
 
-	public static InmarsatHeader createHeader(HeaderData headerData) throws IllegalArgumentException {
+	public static InmarsatHeader createHeader(HeaderData headerData) {
 		InmarsatHeader iHeader = new InmarsatHeader();
 
 		byte[] h = new byte[headerData.getType().getLength()];
@@ -163,7 +163,7 @@ public class InmarsatHeader {
 	}
 
 	public String getHeaderAsHexString() {
-		return InmarsatUtils.bytesArrrayToHexString(header);
+		return InmarsatUtils.bytesArrayToHexString(header);
 	}
 
 	@SuppressWarnings("SameReturnValue")
@@ -218,7 +218,7 @@ public class InmarsatHeader {
 		if (position == null) {
 			return 0;
 		}
-		return Integer.parseInt("" + getSatId(position).getValue() + "" + getLesId(position));
+		return Integer.parseInt(String.format("%d%d", getSatId(position).getValue(), getLesId(position)));
 	}
 
 	public int getLesId(int position) {

@@ -82,7 +82,8 @@ public class HeaderDataBuilder {
 	}
 
 	public HeaderData createHeaderData() {
-		return new HeaderData(type, refno, dataPresentation, failureReason, deliveryAttempts, satIdAndLesId, storedTime,
-				dataLength, dnid, memNo, mesNo);
+		return new HeaderData(type, refno,
+				new HeaderData.OptionalHeader1(dataPresentation, failureReason, deliveryAttempts, satIdAndLesId),
+				storedTime, new HeaderData.OptionalHeader2(dataLength, dnid, memNo, mesNo));
 	}
 }

@@ -50,16 +50,15 @@ public class HeaderStruct {
 	private final int length;
 	private final LinkedHashMap<HeaderByte, Integer> lhs = new LinkedHashMap<>();
 
-	public HeaderStruct(boolean presentation, boolean failure, boolean delivery, boolean satIdAndLesId,
-			boolean dataLength, boolean dnid, boolean memberNo, boolean mesMobNo) {
-		this.presentation = presentation;
-		this.failure = failure;
-		this.delivery = delivery;
-		this.satIdAndLesId = satIdAndLesId;
-		this.dataLength = dataLength;
-		this.dnid = dnid;
-		this.memberNo = memberNo;
-		this.mesMobNo = mesMobNo;
+	public HeaderStruct(Part1 part1, Part2 part2) {
+		this.presentation = part1.isPresentation();
+		this.failure = part1.isFailure();
+		this.delivery = part1.isDelivery();
+		this.satIdAndLesId = part1.isSatIdAndLesId();
+		this.dataLength = part1.isDataLength();
+		this.dnid = part2.isDnid();
+		this.memberNo = part2.isMemberNo();
+		this.mesMobNo = part2.isMesMobNo();
 
 		int index = 0;
 		lhs.put(HeaderByte.START_OF_HEADER, index);
@@ -77,27 +76,27 @@ public class HeaderStruct {
 		lhs.put(HeaderByte.MSG_REF_NO, index);
 		index += HeaderByte.MSG_REF_NO.getNoOfBytes();
 
-		if (presentation) {
+		if (part1.isPresentation()) {
 			lhs.put(HeaderByte.PRESENTATION, index);
 			index += HeaderByte.PRESENTATION.getNoOfBytes();
 		}
 
-		if (failure) {
+		if (part1.isFailure()) {
 			lhs.put(HeaderByte.FAILURE_RESON, index);
 			index += HeaderByte.FAILURE_RESON.getNoOfBytes();
 		}
 
-		if (delivery) {
+		if (part1.isDelivery()) {
 			lhs.put(HeaderByte.DELIVERY_ATTEMPTS, index);
 			index += HeaderByte.DELIVERY_ATTEMPTS.getNoOfBytes();
 		}
 
-		if (satIdAndLesId) {
+		if (part1.isSatIdAndLesId()) {
 			lhs.put(HeaderByte.SATID_AND_LESID, index);
 			index += HeaderByte.SATID_AND_LESID.getNoOfBytes();
 		}
 
-		if (dataLength) {
+		if (part1.isDataLength()) {
 			lhs.put(HeaderByte.DATA_LENGTH, index);
 			index += HeaderByte.DATA_LENGTH.getNoOfBytes();
 		}
@@ -105,17 +104,17 @@ public class HeaderStruct {
 		lhs.put(HeaderByte.STORED_TIME, index);
 		index += HeaderByte.STORED_TIME.getNoOfBytes();
 
-		if (dnid) {
+		if (part2.isDnid()) {
 			lhs.put(HeaderByte.DNID, index);
 			index += HeaderByte.DNID.getNoOfBytes();
 		}
 
-		if (memberNo) {
+		if (part2.isMemberNo()) {
 			lhs.put(HeaderByte.MEMBER_NO, index);
 			index += HeaderByte.MEMBER_NO.getNoOfBytes();
 		}
 
-		if (mesMobNo) {
+		if (part2.isMesMobNo()) {
 			lhs.put(HeaderByte.MES_MOB_NO, index);
 			index += HeaderByte.MES_MOB_NO.getNoOfBytes();
 		}
@@ -225,5 +224,66 @@ public class HeaderStruct {
 
 	public int getLength() {
 		return length;
+	}
+
+	static class Part1 {
+		private final boolean presentation;
+		private final boolean failure;
+		private final boolean delivery;
+		private final boolean satIdAndLesId;
+		private final boolean dataLength;
+
+		Part1(boolean presentation, boolean failure, boolean delivery, boolean satIdAndLesId, boolean dataLength) {
+			this.presentation = presentation;
+			this.failure = failure;
+			this.delivery = delivery;
+			this.satIdAndLesId = satIdAndLesId;
+			this.dataLength = dataLength;
+		}
+
+		public boolean isPresentation() {
+			return presentation;
+		}
+
+		public boolean isFailure() {
+			return failure;
+		}
+
+		public boolean isDelivery() {
+			return delivery;
+		}
+
+		public boolean isSatIdAndLesId() {
+			return satIdAndLesId;
+		}
+
+		public boolean isDataLength() {
+			return dataLength;
+		}
+	}
+
+
+	static class Part2 {
+		private final boolean dnid;
+		private final boolean memberNo;
+		private final boolean mesMobNo;
+
+		Part2(boolean dnid, boolean memberNo, boolean mesMobNo) {
+			this.dnid = dnid;
+			this.memberNo = memberNo;
+			this.mesMobNo = mesMobNo;
+		}
+
+		public boolean isDnid() {
+			return dnid;
+		}
+
+		public boolean isMemberNo() {
+			return memberNo;
+		}
+
+		public boolean isMesMobNo() {
+			return mesMobNo;
+		}
 	}
 }

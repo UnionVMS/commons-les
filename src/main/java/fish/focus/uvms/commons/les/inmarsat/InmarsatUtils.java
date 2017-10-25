@@ -5,17 +5,18 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 
 public final class InmarsatUtils {
-	private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
+	private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
 
+	private InmarsatUtils() {}
 
 	// Returns digit at pos
 	public static int digitAt(int input, int pos) {
 		int i = (int) (input % (Math.pow(10, pos)));
-		int j = (int) (i / Math.pow(10, pos - 1));
+		int j = (int) (i / Math.pow(10, (double) pos - 1));
 		return Math.abs(j); // abs handles negative input
 	}
 
-	public static String bytesArrrayToHexString(byte[] bytes) {
+	public static String bytesArrayToHexString(byte[] bytes) {
 		char[] hexChars = new char[bytes.length * 2];
 		for (int j = 0; j < bytes.length; j++) {
 			int v = bytes[j] & 0xFF;
@@ -33,10 +34,11 @@ public final class InmarsatUtils {
 
 	/**
 	 * Get an byte array by binary string
+	 *
 	 * @param binaryString the string representing a byte
 	 * @return an byte array
 	 */
-	public static byte[] binaryStringToByteArray(String binaryString) throws IllegalArgumentException {
+	public static byte[] binaryStringToByteArray(String binaryString) {
 		int splitSize = 8;
 
 		if (binaryString.length() % splitSize == 0) {
@@ -79,6 +81,7 @@ public final class InmarsatUtils {
 					binary.insert(0, "0");
 					break;
 				case 1:
+				default:
 					binary.insert(0, "1");
 			}
 		}
@@ -117,7 +120,7 @@ public final class InmarsatUtils {
 	/**
 	 * Read an unsigned short (2 bytes) from the given byte array (MSB last)
 	 *
-	 * @param bytes  The bytes to read from
+	 * @param bytes The bytes to read from
 	 * @return The short as a int
 	 */
 	private static int readUnsignedShort(byte[] bytes) {
@@ -128,7 +131,7 @@ public final class InmarsatUtils {
 	/**
 	 * Read an unsigned integer from the given byte array (MSB last)
 	 *
-	 * @param bytes  The bytes to read from
+	 * @param bytes The bytes to read from
 	 * @return The integer as a long
 	 */
 	private static long readUnsignedInt(byte[] bytes) {

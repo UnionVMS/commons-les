@@ -4,7 +4,7 @@ public abstract class InmarsatBody {
 	protected byte[] body = null;
 
 	public String getBodyAsHexString() {
-		return InmarsatUtils.bytesArrrayToHexString(body);
+		return InmarsatUtils.bytesArrayToHexString(body);
 	}
 
 	public abstract boolean validate();

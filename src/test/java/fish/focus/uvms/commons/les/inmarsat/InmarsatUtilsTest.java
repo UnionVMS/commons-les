@@ -107,7 +107,7 @@ public class InmarsatUtilsTest {
 	public void bytesArrrayToHex() throws Exception {
 		byte[] bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, (byte) 0x98, 9, (byte) 0xFF, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 				127, (byte) 128};
-		String actual = InmarsatUtils.bytesArrrayToHexString(bytes);
+		String actual = InmarsatUtils.bytesArrayToHexString(bytes);
 		String expected = "000102030405069809FF0B0C0D0E0F101112137F80";
 
 		assertEquals(expected, actual);
