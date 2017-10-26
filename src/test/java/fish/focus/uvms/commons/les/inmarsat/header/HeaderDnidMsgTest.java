@@ -93,6 +93,7 @@ public class HeaderDnidMsgTest {
 
 	@Test
 	public void getDataPresentation() {
+
 		assertEquals(dataPresentation, headerDnidMsg.getDataPresentation());
 	}
 

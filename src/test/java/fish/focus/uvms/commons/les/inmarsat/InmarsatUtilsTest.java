@@ -1,11 +1,14 @@
 package fish.focus.uvms.commons.les.inmarsat;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import static java.lang.Math.pow;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class InmarsatUtilsTest {
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void int2ByteArray() {
@@ -29,6 +32,19 @@ public class InmarsatUtilsTest {
 
 	}
 
+	@Test
+	public void binaryStringToByteArray() {
+		assertArrayEquals(new byte[] {(byte) 0b10010101}, InmarsatUtils.binaryStringToByteArray("10010101"));
+		assertArrayEquals(new byte[] {(byte) 0b10010101, (byte) 0b10010101},
+				InmarsatUtils.binaryStringToByteArray("10010101" + "10010101"));
+		assertArrayEquals(new byte[] {(byte) 0b11110000, (byte) 0b10010101, (byte) 0b10010101},
+				InmarsatUtils.binaryStringToByteArray("11110000" + "10010101" + "10010101"));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void binaryStringToByteArrayNegative() {
+		assertNotEquals(new byte[] {(byte) 0b0101}, InmarsatUtils.binaryStringToByteArray("0101"));
+	}
 
 	@Test
 	public void intToBinary() throws Exception {

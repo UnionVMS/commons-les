@@ -1,8 +1,8 @@
 package fish.focus.uvms.commons.les.inmarsat;
 
 public class InmarsatMessage {
-	private InmarsatHeader header;
-	private InmarsatBody body;
+	private final InmarsatHeader header;
+	private final InmarsatBody body;
 
 	public InmarsatMessage(InmarsatHeader header, InmarsatBody body) {
 		this.header = header;

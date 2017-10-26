@@ -148,6 +148,11 @@ public class PositionReportTest {
 	@Test
 	public void getSpeed() {
 		assertEquals("Speed should be same", positionReportData.getSpeed(), positionReport.getSpeed(), 0);
+		byte[] cloneBody = body.clone();
+		cloneBody[8] = (byte) 0xFF;
+		PositionReport positionReportClone = PositionReport.createPositionReport(cloneBody);
+
+		assertEquals("Speed should be notdefined", 0, positionReportClone.getSpeed(), 0);
 	}
 
 	@Test

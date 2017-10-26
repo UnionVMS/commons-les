@@ -2,7 +2,6 @@ package fish.focus.uvms.commons.les.inmarsat;
 
 import fish.focus.uvms.commons.les.inmarsat.header.*;
 import fish.focus.uvms.commons.les.inmarsat.header.body.PositionReport;
-import fish.focus.uvms.commons.les.inmarsat.header.body.PositionReportBits;
 import fish.focus.uvms.commons.les.inmarsat.header.body.PositionReportData;
 import org.junit.Test;
 import java.util.Arrays;
@@ -35,8 +34,7 @@ public class InmarsatMessageTest {
 
 		//Negative (inmarsatBody)
 		InmarsatBody inmarsatBodyClone = PositionReport.createPositionReport(bodyData);
-		byte[] bodyClone = Arrays.copyOf(inmarsatBodyClone.body, inmarsatBodyClone.body.length - 2);
-		inmarsatBodyClone.body = bodyClone;
+		inmarsatBodyClone.body = Arrays.copyOf(inmarsatBodyClone.body, inmarsatBodyClone.body.length - 2);
 		message = new InmarsatMessage(inmarsatHeader, inmarsatBodyClone);
 		assertFalse(message.validate());
 

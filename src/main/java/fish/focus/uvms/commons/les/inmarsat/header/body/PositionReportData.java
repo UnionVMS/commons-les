@@ -6,12 +6,8 @@ public class PositionReportData {
 	private final Position latPosition;
 	private final Position longPosition;
 	private final int mem;
-	private final int monthRes;
-	private final int day;
-	private final int hour;
-	private final int minute;
-	private final double speed;
-	private final int course;
+	private final PositionDate positionDate;
+	private final SpeedAndCourse speedAndCourse;
 
 	private PositionReportData(int dataReportFormat, Position latPosition, Position longPosition, int mem,
 			PositionDate positionDate, SpeedAndCourse speedAndCourse) {
@@ -19,12 +15,9 @@ public class PositionReportData {
 		this.latPosition = latPosition;
 		this.longPosition = longPosition;
 		this.mem = mem;
-		this.monthRes = positionDate.getMonthRes();
-		this.day = positionDate.getDay();
-		this.hour = positionDate.getHour();
-		this.minute = positionDate.getMinute();
-		this.speed = speedAndCourse.getSpeed();
-		this.course = speedAndCourse.getCourse();
+		this.positionDate = positionDate;
+		this.speedAndCourse = speedAndCourse;
+
 	}
 
 	public int getDataReportFormat() {
@@ -68,27 +61,27 @@ public class PositionReportData {
 	}
 
 	public int getMonthRes() {
-		return monthRes;
+		return positionDate.getMonthRes();
 	}
 
 	public int getDay() {
-		return day;
+		return positionDate.getDay();
 	}
 
 	public int getHour() {
-		return hour;
+		return positionDate.getHour();
 	}
 
 	public int getMinute() {
-		return minute;
+		return positionDate.getMinute();
 	}
 
 	public double getSpeed() {
-		return speed;
+		return speedAndCourse.getSpeed();
 	}
 
 	public int getCourse() {
-		return course;
+		return speedAndCourse.getCourse();
 	}
 
 	public static class Builder {

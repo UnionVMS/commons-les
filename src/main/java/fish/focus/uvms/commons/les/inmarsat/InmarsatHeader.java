@@ -110,27 +110,37 @@ public class InmarsatHeader {
 
 	public static boolean isValidHeader(byte[] headerToValidate) {
 
-		if (headerToValidate == null || headerToValidate.length < (HeaderStruct.POS_REF_NO_END + 1) || //MINLENGTH
-				headerToValidate.length != headerToValidate[HeaderStruct.POS_HEADER_LENGTH]) {
-
+		if (!isValidHeaderLength(headerToValidate)) {
 			LOGGER.debug("header validation failed is either null or to short");
 			return false;
-
-		} else if (headerToValidate[HeaderStruct.POS_START_OF_HEADER_POS] != API_SOH
-				|| headerToValidate[HeaderStruct.POS_LEAD_TEXT_0] != API_LEAD_TEXT.getBytes()[0]
-				|| headerToValidate[HeaderStruct.POS_LEAD_TEXT_1] != API_LEAD_TEXT.getBytes()[1]
-				|| headerToValidate[HeaderStruct.POS_LEAD_TEXT_2] != API_LEAD_TEXT.getBytes()[2]
-				|| headerToValidate[headerToValidate.length - 1] != API_EOH
-				|| HeaderType.fromInt(headerToValidate[HeaderStruct.POS_TYPE]) == null
-				|| (HeaderType.fromInt(headerToValidate[HeaderStruct.POS_TYPE]) != null
-						&& (HeaderType.fromInt(headerToValidate[HeaderStruct.POS_TYPE]))
-								.getLength() != headerToValidate.length)) {
-
+		} else if (!isValidHeaderBase(headerToValidate)) {
 			LOGGER.debug("header validation failed format check");
 			return false;
 		}
 
 		return true;
+	}
+
+	private static boolean isValidHeaderBase(byte[] headerToValidate) {
+		return headerToValidate != null && API_SOH == headerToValidate[HeaderStruct.POS_START_OF_HEADER_POS]
+				&& API_LEAD_TEXT.getBytes()[0] == headerToValidate[HeaderStruct.POS_LEAD_TEXT_0]
+				&& API_LEAD_TEXT.getBytes()[1] == headerToValidate[HeaderStruct.POS_LEAD_TEXT_1]
+				&& API_LEAD_TEXT.getBytes()[2] == headerToValidate[HeaderStruct.POS_LEAD_TEXT_2]
+				&& API_EOH == headerToValidate[headerToValidate.length - 1];
+
+	}
+
+	private static boolean isValidHeaderLength(byte[] headerToValidate) {
+		if (headerToValidate != null) {
+			HeaderType type = HeaderType.fromInt(headerToValidate[HeaderStruct.POS_TYPE]);
+			if (type != null && (HeaderStruct.POS_REF_NO_END + 1) < headerToValidate.length //MIN LENGTH
+					&& headerToValidate[HeaderStruct.POS_HEADER_LENGTH] == headerToValidate.length
+					&& type.getLength() == headerToValidate.length) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public static byte createSatIdAndLesIdByte(int satIdAndLesId) {

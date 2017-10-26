@@ -35,7 +35,7 @@ public final class InmarsatUtils {
 	/**
 	 * Get an byte array by binary string
 	 *
-	 * @param binaryString the string representing a byte
+	 * @param binaryString the string representing a byte (must be multiple of 8 bits)
 	 * @return an byte array
 	 */
 	public static byte[] binaryStringToByteArray(String binaryString) {
