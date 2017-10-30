@@ -195,8 +195,8 @@ public class InmarsatFileHandlerTest {
 		List<Path> listOfFiles = ifd.listFiles(downloadDir);
 		assertEquals(2, listOfFiles.size());
 
-		assertEquals(file1, listOfFiles.get(0));
-		assertEquals(file2, listOfFiles.get(1));
+		assertTrue(listOfFiles.contains(file1));
+		assertTrue(listOfFiles.contains(file2));
 
 	}
 
