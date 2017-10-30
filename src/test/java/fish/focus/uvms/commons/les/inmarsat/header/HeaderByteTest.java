@@ -16,4 +16,5 @@ public class HeaderByteTest {
 		assertEquals(DATA_LENGTH, HeaderByte.fromInt(DATA_LENGTH.getValue()));
 		assertNull(HeaderByte.fromInt(33));
 	}
+
 }

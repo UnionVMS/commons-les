@@ -1,6 +1,8 @@
 package fish.focus.uvms.commons.les.inmarsat.header.body;
 
 import fish.focus.uvms.commons.les.inmarsat.InmarsatBody;
+import fish.focus.uvms.commons.les.inmarsat.InmarsatConfig;
+import fish.focus.uvms.commons.les.inmarsat.InmarsatException;
 import fish.focus.uvms.commons.les.inmarsat.InmarsatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,25 +27,35 @@ import org.slf4j.LoggerFactory;
  * Course   (Accuracy of 1 degree)
  */
 public class PositionReport extends InmarsatBody {
+	public static final int DATA_PACKET_1_BYTES = 8;
+	public static final int DATA_PACKET_2_BYTES = 12;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PositionReport.class);
-	public static final int DATA_LENGTH = 20;
 
-	private PositionReport() {}
+	private PositionReport() {
+		super();
+	}
 
-	public static PositionReport createPositionReport(byte[] body) {
+	/**
+	 * @param body for a positionreport
+	 * @return a PositionReport
+	 * @throws IllegalArgumentException if not a valid body
+	 */
+	public static PositionReport createPositionReport(byte[] body) throws InmarsatException {
 		PositionReport posReport = new PositionReport();
 		posReport.body = body;
 		if (!posReport.validate()) {
-			LOGGER.error("Not a valid Position report body: {}", body);
-			throw new IllegalArgumentException("Not a valid Position report body");
+			LOGGER.debug("Not a valid Position report body: {}", body);
+			throw new InmarsatException("Not a valid Position report body");
 		}
 		return posReport;
 	}
 
-	public static PositionReport createPositionReport(PositionReportData positionReportData) {
+	public static PositionReport createPositionReport(PositionReportData positionReportData, boolean includePackage2)
+			throws InmarsatException {
 		PositionReport posReport = new PositionReport();
 
-		byte[] body = new byte[DATA_LENGTH];
+		byte[] body = new byte[includePackage2 ? DATA_PACKET_1_BYTES + DATA_PACKET_2_BYTES : DATA_PACKET_1_BYTES];
 		String sb = InmarsatUtils.intToBinary(positionReportData.getDataReportFormat(),
 				PositionReportBits.DATA_REPORT_FORMAT.getNoOfBytes())
 				+ InmarsatUtils.intToBinary(positionReportData.getLatHemi(),
@@ -65,26 +77,29 @@ public class PositionReport extends InmarsatBody {
 				+ InmarsatUtils.intToBinary(positionReportData.getDay(), PositionReportBits.DAY_OF_MONTH.getNoOfBytes())
 				+ InmarsatUtils.intToBinary(positionReportData.getHour(), PositionReportBits.HOUR.getNoOfBytes())
 				+ InmarsatUtils.intToBinary(positionReportData.getMinute() / 2,
-						PositionReportBits.MINUTES.getNoOfBytes())
-				+ InmarsatUtils.intToBinary((int) (positionReportData.getSpeed() * 5),
-						PositionReportBits.SPEED.getNoOfBytes())
-				+ InmarsatUtils.intToBinary(positionReportData.getCourse(), PositionReportBits.COURSE.getNoOfBytes())
-				+ InmarsatUtils.intToBinary(0, PositionReportBits.RESERVED_BY_INMARSAT.getNoOfBytes())
-				+ InmarsatUtils.intToBinary(0, PositionReportBits.FREE_FOR_USERDATA.getNoOfBytes());
+						PositionReportBits.MINUTES.getNoOfBytes());
+		if (includePackage2) {
+			sb = sb + InmarsatUtils.intToBinary((int) (positionReportData.getSpeed() * 5),
+					PositionReportBits.SPEED.getNoOfBytes())
+					+ InmarsatUtils.intToBinary(positionReportData.getCourse(),
+							PositionReportBits.COURSE.getNoOfBytes())
+					+ InmarsatUtils.intToBinary(0, PositionReportBits.RESERVED_BY_INMARSAT.getNoOfBytes())
+					+ InmarsatUtils.intToBinary(0, PositionReportBits.FREE_FOR_USERDATA.getNoOfBytes());
 
+		}
 
 		posReport.body = InmarsatUtils.binaryStringToByteArray(sb);
 		if (!posReport.validate()) {
-			LOGGER.error("Not a valid Position report body: {}", body);
-			throw new IllegalArgumentException("Not a valid Position report body");
+			LOGGER.debug("Not a valid Position report body: {}", body);
+			throw new InmarsatException("Not a valid Position report body");
 		}
 		return posReport;
 	}
 
 	@Override
 	public boolean validate() {
-		if (body.length != DATA_LENGTH) {
-			LOGGER.warn("Position report data length not valid: {}", body);
+		if ((body.length != DATA_PACKET_1_BYTES) && body.length != (DATA_PACKET_1_BYTES + DATA_PACKET_2_BYTES)) {
+			LOGGER.debug("Position report data length not valid: {}", body);
 			return false;
 		}
 
@@ -181,7 +196,7 @@ public class PositionReport extends InmarsatBody {
 
 	/**
 	 * Macro Encoded Msg (MEM) (7 bits):
-	 * Message (MEM) number is a code that identifies the reason for n reporting or
+	 * Message (MEM) number is a code that identifies the reason for sending the report (such as regular position reporting or
 	 * a report triggered by some specific event).
 	 *
 	 * @return Message (MEM) number
@@ -246,7 +261,7 @@ public class PositionReport extends InmarsatBody {
 	 * @return speed
 	 */
 	public double getSpeed() {
-		if (body[8] == (byte) 0xFF) {
+		if ((body.length == DATA_PACKET_1_BYTES) || (body[8] == (byte) 0xFF)) {
 			return 0;
 		}
 
@@ -259,9 +274,86 @@ public class PositionReport extends InmarsatBody {
 	 * @return Course (0-359 degrees)
 	 */
 	public int getCourse() {
+		if (body.length == DATA_PACKET_1_BYTES) {
+			return 0;
+		}
+
 		String courseBin = InmarsatUtils.byteToZeroPaddedString(body[9])
 				.concat(InmarsatUtils.byteToZeroPaddedString(body[10]).substring(0, 1));
 		return Integer.parseInt(courseBin, 2);
+	}
+
+	/**
+	 * Detailed date information
+	 *
+	 * @return detailed date from extra package
+	 */
+	public PositionDate.PositionDateExtra getPositionDateExtra() {
+		if (body.length == DATA_PACKET_1_BYTES && InmarsatConfig.getInstance().isExtraDataEnabled()) {
+			return null; //No extra date
+		}
+
+		switch (InmarsatConfig.getInstance().getExtraDataFormat()) {
+			case 1:
+				//Dateformat1
+				int month = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(0, 3), 2);
+				int year = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(3)
+						.concat(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(0, 3)), 2);
+
+				if (PositionDate.PositionDateExtra.validFormat1(year, month)) {
+					return new PositionDate.PositionDateExtra(year, month);
+				}
+				break;
+			case 2:
+				//Dateformat2
+				year = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(1), 2);
+				month = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(0, 4), 2);
+				int day = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(4)
+						.concat(InmarsatUtils.byteToZeroPaddedString(body[14]).substring(0, 1)), 2);
+				int hour = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[14]).substring(1, 6), 2);
+				int min = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[14]).substring(6)
+						.concat(InmarsatUtils.byteToZeroPaddedString(body[15]).substring(0, 4)), 2);
+
+				if (PositionDate.PositionDateExtra.validFormat2(year, month, day, hour, min)) {
+					return new PositionDate.PositionDateExtra(2, year, month, day, hour, min);
+				}
+				break;
+			case 3:
+				//Dateformat3
+				year = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(1)
+						.concat(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(0, 5)), 2);
+				month = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(5)
+						.concat(InmarsatUtils.byteToZeroPaddedString(body[14]).substring(0, 1)), 2);
+				day = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[14]).substring(1, 6), 2);
+				hour = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[14]).substring(6)
+						.concat(InmarsatUtils.byteToZeroPaddedString(body[15]).substring(0, 3)), 2);
+				min = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[15]).substring(3)
+						.concat(InmarsatUtils.byteToZeroPaddedString(body[16]).substring(0, 1)), 2);
+
+				if (PositionDate.PositionDateExtra.validFormat3(year, month, day, hour, min)) {
+					return new PositionDate.PositionDateExtra(3, year, month, day, hour, min);
+				}
+				break;
+			default:
+				return null;
+		}
+
+		return null;
+	}
+
+
+	public Position getLatitude() {
+		return new Position(getLatitudeHemisphere(), getLatitudeDegrees(), getLatitudeMinutes(),
+				getLatitudeMinuteFractions());
+	}
+
+	public Position getLongitude() {
+		return new Position(getLongitudeHemisphere(), getLongitudeDegrees(), getLongitudeMinutes(),
+				getLongitudeMinuteFractions());
+	}
+
+	public PositionDate getPositionDate() throws InmarsatException {
+		return new PositionDate(getDayOfMonth(), getHour(), getMinutes(), getPositionDateExtra());
 	}
 
 

@@ -28,5 +28,15 @@ public class Position {
 	public int getMinFrac() {
 		return minuteFraction;
 	}
+
+	public Double getAsDouble() {
+		double minAndMinFraction = (double) minute + ((double) minuteFraction / 100);
+		Double d = (double) degree + (minAndMinFraction / 60);
+
+		if (hemisphere > 0) {
+			d *= -1.0; //West or South
+		}
+		return d;
+	}
 }
 

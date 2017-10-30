@@ -19,7 +19,7 @@ public class InmarsatHeaderTest {
 
 	private final InmarsatHeader iHeader;
 
-	public InmarsatHeaderTest(String headerHex, HeaderData headerData) {
+	public InmarsatHeaderTest(String headerHex, HeaderData headerData) throws InmarsatException {
 		header = InmarsatUtils.hexStringToByteArray(headerHex);
 		headerHexString = headerHex;
 		iHeader = InmarsatHeader.createHeader(header);
@@ -52,7 +52,7 @@ public class InmarsatHeaderTest {
 
 	@Test
 	public void isValidHeader() {
-		assertTrue(InmarsatHeader.isValidHeader(header));
+		assertTrue(InmarsatHeader.validate(header));
 	}
 
 
@@ -61,7 +61,7 @@ public class InmarsatHeaderTest {
 		byte[] cloneHeader = header.clone();
 		cloneHeader[cloneHeader.length - 1] = 0x1;
 		iHeader.header = cloneHeader;
-		assertFalse(iHeader.isValidHeader());
+		assertFalse(iHeader.validate());
 	}
 
 
@@ -70,7 +70,7 @@ public class InmarsatHeaderTest {
 		byte[] cloneHeader = header.clone();
 		cloneHeader[0] = 0x2;
 		iHeader.header = cloneHeader;
-		assertFalse(iHeader.isValidHeader());
+		assertFalse(iHeader.validate());
 
 	}
 
@@ -79,7 +79,7 @@ public class InmarsatHeaderTest {
 		byte[] cloneHeader = header.clone();
 		cloneHeader[HeaderStruct.POS_HEADER_LENGTH] = 7;
 		iHeader.header = cloneHeader;
-		assertFalse(iHeader.isValidHeader());
+		assertFalse(iHeader.validate());
 	}
 
 
@@ -88,7 +88,7 @@ public class InmarsatHeaderTest {
 		byte[] cloneHeader = header.clone();
 		cloneHeader[HeaderStruct.POS_LEAD_TEXT_0] = 0x55; //"U&T"
 		iHeader.header = cloneHeader;
-		assertFalse(iHeader.isValidHeader());
+		assertFalse(iHeader.validate());
 	}
 
 	@Test
@@ -96,7 +96,7 @@ public class InmarsatHeaderTest {
 		byte[] cloneHeader = header.clone();
 		cloneHeader[HeaderStruct.POS_TYPE] = 8;
 		iHeader.header = cloneHeader;
-		assertFalse(iHeader.isValidHeader());
+		assertFalse(iHeader.validate());
 	}
 
 	@Test
@@ -117,7 +117,7 @@ public class InmarsatHeaderTest {
 
 	@Test
 	public void getHeaderLength() {
-		assertEquals(headerData.getType().getLength(), iHeader.getHeaderLength());
+		assertEquals(headerData.getType().getHeaderLength(), iHeader.getHeaderLength());
 	}
 
 	@Test

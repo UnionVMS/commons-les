@@ -26,7 +26,7 @@ public class InmarsatHeaderStaticTest {
 	}
 
 	@Test
-	public void createHeaderFromHeaderData() throws ParseException {
+	public void createHeaderFromHeaderData() throws InmarsatException, ParseException {
 		assertEquals("015426540116890b08000255140036372455c307e702".toUpperCase(),
 				InmarsatHeader.createHeader(new HeaderDataBuilder().setType(HeaderType.DNID).setRefno(527241)
 						.setDataPresentation(HeaderDataPresentation.TRANS_DATA).setSatIdAndLesId(121).setDataLength(20)

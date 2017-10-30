@@ -41,7 +41,7 @@ public class HeaderStruct {
 
 	private final Part1 part1;
 	private final Part2 part2;
-	private final int length;
+	private final int headerLength;
 	private final EnumMap<HeaderByte, Integer> lhs = new EnumMap<>(HeaderByte.class);
 
 	public HeaderStruct(Part1 part1, Part2 part2) {
@@ -110,7 +110,7 @@ public class HeaderStruct {
 		lhs.put(HeaderByte.END_OF_HEADER, index);
 		index += HeaderByte.END_OF_HEADER.getNoOfBytes();
 
-		length = index;
+		headerLength = index;
 
 	}
 
@@ -211,8 +211,8 @@ public class HeaderStruct {
 		return lhs.get(HeaderByte.END_OF_HEADER);
 	}
 
-	public int getLength() {
-		return length;
+	public int getHeaderLength() {
+		return headerLength;
 	}
 
 	static class Part1 {

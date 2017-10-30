@@ -15,23 +15,23 @@ public class InmarsatHeader {
 
 	private InmarsatHeader() {}
 
-	public static InmarsatHeader createHeader(byte[] header) {
+	public static InmarsatHeader createHeader(byte[] header) throws InmarsatException {
 		InmarsatHeader iHeader = new InmarsatHeader();
 		iHeader.header = header;
-		if (iHeader.isValidHeader()) {
+		if (iHeader.validate()) {
 			return iHeader;
 
 		} else {
-			LOGGER.error("Not a valid header: {}", header);
-			throw new IllegalArgumentException("Not a valid header");
+			LOGGER.debug("Not a valid header: {}", header);
+			throw new InmarsatException("Not a valid header");
 		}
 
 	}
 
-	public static InmarsatHeader createHeader(HeaderData headerData) {
+	public static InmarsatHeader createHeader(HeaderData headerData) throws InmarsatException {
 		InmarsatHeader iHeader = new InmarsatHeader();
 
-		byte[] h = new byte[headerData.getType().getLength()];
+		byte[] h = new byte[headerData.getType().getHeaderLength()];
 
 		h[HeaderStruct.POS_START_OF_HEADER_POS] = InmarsatDefintion.API_SOH;
 		h[HeaderStruct.POS_LEAD_TEXT_0] = InmarsatDefintion.API_LEAD_TEXT.getBytes()[0];
@@ -39,14 +39,14 @@ public class InmarsatHeader {
 		h[HeaderStruct.POS_LEAD_TEXT_2] = InmarsatDefintion.API_LEAD_TEXT.getBytes()[2];
 
 		h[HeaderStruct.POS_TYPE] = (byte) headerData.getType().getValue();
-		h[HeaderStruct.POS_HEADER_LENGTH] = (byte) headerData.getType().getLength();
+		h[HeaderStruct.POS_HEADER_LENGTH] = (byte) headerData.getType().getHeaderLength();
 
 		byte[] refNoBytes = ByteBuffer.allocate(4).putInt(headerData.getRefno()).array();
 		h[HeaderStruct.POS_REF_NO_START] = refNoBytes[3];
 		h[HeaderStruct.POS_REF_NO_START + 1] = refNoBytes[2];
 		h[HeaderStruct.POS_REF_NO_START + 2] = refNoBytes[1];
 		h[HeaderStruct.POS_REF_NO_END] = refNoBytes[0];
-		h[headerData.getType().getLength() - 1] = InmarsatDefintion.API_EOH;
+		h[headerData.getType().getHeaderLength() - 1] = InmarsatDefintion.API_EOH;
 
 		if (headerData.getType().getHeaderStruct().isPresentation()) {
 			h[headerData.getType().getHeaderStruct().getPostionPresentation()] =
@@ -98,17 +98,17 @@ public class InmarsatHeader {
 
 		iHeader.header = h;
 
-		if (iHeader.isValidHeader()) {
+		if (iHeader.validate()) {
 			return iHeader;
 
 		} else {
-			LOGGER.error("Not a valid header: {}", h);
-			throw new IllegalArgumentException("Not a valid header");
+			LOGGER.debug("Not a valid header: {}", h);
+			throw new InmarsatException("Not a valid header");
 		}
 
 	}
 
-	public static boolean isValidHeader(byte[] headerToValidate) {
+	public static boolean validate(byte[] headerToValidate) {
 
 		if (!isValidHeaderLength(headerToValidate)) {
 			LOGGER.debug("header validation failed is either null or to short");
@@ -135,7 +135,7 @@ public class InmarsatHeader {
 			HeaderType type = HeaderType.fromInt(headerToValidate[HeaderStruct.POS_TYPE]);
 			if (type != null && (HeaderStruct.POS_REF_NO_END + 1) < headerToValidate.length //MIN LENGTH
 					&& headerToValidate[HeaderStruct.POS_HEADER_LENGTH] == headerToValidate.length
-					&& type.getLength() == headerToValidate.length) {
+					&& type.getHeaderLength() == headerToValidate.length) {
 				return true;
 			}
 		}
@@ -163,13 +163,20 @@ public class InmarsatHeader {
 
 	private static byte[] createStoreTimeByte(Date storedTime) {
 		long seconds = storedTime.getTime() / 1000;
-
 		return InmarsatUtils.int2ByteArray((int) seconds, 4);
-
 	}
 
-	public boolean isValidHeader() {
-		return isValidHeader(header);
+	public static boolean isStartOfMessage(byte[] message, int i) {
+
+		return API_SOH == message[i] //@formatter:off
+                && API_LEAD_TEXT.getBytes()[0] == message[i + 1]
+                && API_LEAD_TEXT.getBytes()[1] == message[i + 2]
+                && API_LEAD_TEXT.getBytes()[2] == message[i + 3];
+        //@formatter:on
+	}
+
+	public boolean validate() {
+		return validate(header);
 	}
 
 	public String getHeaderAsHexString() {

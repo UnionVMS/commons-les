@@ -15,7 +15,7 @@ public class HeaderTypeTest {
 
 	@Test
 	public void getLength() throws Exception {
-		assertEquals(22, DNID.getLength());
+		assertEquals(22, DNID.getHeaderLength());
 	}
 
 

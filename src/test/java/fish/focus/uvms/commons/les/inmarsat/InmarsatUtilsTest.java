@@ -33,7 +33,7 @@ public class InmarsatUtilsTest {
 	}
 
 	@Test
-	public void binaryStringToByteArray() {
+	public void binaryStringToByteArray() throws Exception {
 		assertArrayEquals(new byte[] {(byte) 0b10010101}, InmarsatUtils.binaryStringToByteArray("10010101"));
 		assertArrayEquals(new byte[] {(byte) 0b10010101, (byte) 0b10010101},
 				InmarsatUtils.binaryStringToByteArray("10010101" + "10010101"));
@@ -41,8 +41,8 @@ public class InmarsatUtilsTest {
 				InmarsatUtils.binaryStringToByteArray("11110000" + "10010101" + "10010101"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void binaryStringToByteArrayNegative() {
+	@Test(expected = InmarsatException.class)
+	public void binaryStringToByteArrayNegative() throws InmarsatException {
 		assertNotEquals(new byte[] {(byte) 0b0101}, InmarsatUtils.binaryStringToByteArray("0101"));
 	}
 

@@ -39,8 +39,8 @@ public enum HeaderType {
 		return headerStruct;
 	}
 
-	public int getLength() {
-		return headerStruct.getLength();
+	public int getHeaderLength() {
+		return headerStruct.getHeaderLength();
 	}
 
 }

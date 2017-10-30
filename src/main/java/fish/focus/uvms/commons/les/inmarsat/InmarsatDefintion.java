@@ -13,10 +13,13 @@ package fish.focus.uvms.commons.les.inmarsat;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.TimeZone;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public final class InmarsatDefintion {
 	public static final Charset API_CHARSET = StandardCharsets.US_ASCII;
+	public static final TimeZone API_TIMEZONE = TimeZone.getTimeZone("UTC");
+
 	// API Misc. definitions
 	public static final int API_SOH = 1;
 	public static final int API_EOH = 2;

@@ -28,7 +28,7 @@ public class HeaderDnidTest {
 
 
 	public HeaderDnidTest(String headerHex, int dataLength, HeaderDataPresentation dataPresentation, int dnid,
-			String storedTime, int memberNo, int lesId) {
+			String storedTime, int memberNo, int lesId) throws InmarsatException {
 		header = InmarsatUtils.hexStringToByteArray(headerHex);
 		headerDnid = InmarsatHeader.createHeader(header);
 		this.dataLength = dataLength;
@@ -55,15 +55,15 @@ public class HeaderDnidTest {
 	public void createHeader() {
 		assertNotNull(headerDnid);
 		assertEquals(HeaderType.DNID, headerDnid.getType());
-		assertEquals(HeaderType.DNID.getLength(), headerDnid.getHeaderLength());
+		assertEquals(HeaderType.DNID.getHeaderLength(), headerDnid.getHeaderLength());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void createHeaderNegative() {
+	@Test(expected = InmarsatException.class)
+	public void createHeaderNegative() throws InmarsatException {
 		byte[] cloneHeader = header.clone();
 		cloneHeader[HeaderStruct.POS_TYPE] = 8;
 		InmarsatHeader cloneHeaderDnid = InmarsatHeader.createHeader(cloneHeader);
-		assertFalse(cloneHeaderDnid.isValidHeader());
+		assertFalse(cloneHeaderDnid.validate());
 	}
 
 	@Test

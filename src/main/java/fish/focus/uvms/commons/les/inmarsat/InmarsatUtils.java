@@ -38,7 +38,7 @@ public final class InmarsatUtils {
 	 * @param binaryString the string representing a byte (must be multiple of 8 bits)
 	 * @return an byte array
 	 */
-	public static byte[] binaryStringToByteArray(String binaryString) {
+	public static byte[] binaryStringToByteArray(String binaryString) throws InmarsatException {
 		int splitSize = 8;
 
 		if (binaryString.length() % splitSize == 0) {
@@ -57,7 +57,7 @@ public final class InmarsatUtils {
 			}
 			return resultByteArray;
 		} else {
-			throw new IllegalArgumentException("Cannot convert binary string to byte[], because of the input length. '"
+			throw new InmarsatException("Cannot convert binary string to byte[], because of the input length. '"
 					+ binaryString + "' % 8 != 0");
 
 		}
@@ -115,8 +115,6 @@ public final class InmarsatUtils {
 		return readUnsignedInt(bytes);
 	}
 
-
-
 	/**
 	 * Read an unsigned short (2 bytes) from the given byte array (MSB last)
 	 *
@@ -138,6 +136,4 @@ public final class InmarsatUtils {
 		return (((bytes[3] & 0xffL) << 24) | ((bytes[2] & 0xffL) << 16) | ((bytes[1] & 0xffL) << 8)
 				| (bytes[0] & 0xffL));
 	}
-
-
 }

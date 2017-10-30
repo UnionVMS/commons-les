@@ -1,8 +1,5 @@
 package fish.focus.uvms.commons.les.inmarsat.header;
 
-import fish.focus.uvms.commons.les.inmarsat.header.HeaderByte;
-import fish.focus.uvms.commons.les.inmarsat.header.HeaderStruct;
-import fish.focus.uvms.commons.les.inmarsat.header.HeaderStructBuilder;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -86,19 +83,19 @@ public class HeaderStructTest {
 	public void getLength() throws Exception {
 
 		HeaderStruct headerStruct = new HeaderStructBuilder().createHeaderStruct();
-		assertEquals(getAllLength(), headerStruct.getLength());
+		assertEquals(getAllLength(), headerStruct.getHeaderLength());
 
 		headerStruct = new HeaderStructBuilder().disableMesMobNo().createHeaderStruct();
-		assertEquals(getAllLength() - HeaderByte.MES_MOB_NO.getNoOfBytes(), headerStruct.getLength());
+		assertEquals(getAllLength() - HeaderByte.MES_MOB_NO.getNoOfBytes(), headerStruct.getHeaderLength());
 
 		headerStruct = new HeaderStructBuilder().disablePresentation().disableFailure().disableDelivery()
 				.disableSatIdAndLesId().disableDataLength().disableDnid().disableMemberNo().disableMesMobNo()
 				.createHeaderStruct();
-		assertEquals(getBaseLength(), headerStruct.getLength());
+		assertEquals(getBaseLength(), headerStruct.getHeaderLength());
 
 		headerStruct = new HeaderStructBuilder().disableMesMobNo().disableFailure().createHeaderStruct();
 		assertEquals(getAllLength() - HeaderByte.MES_MOB_NO.getNoOfBytes() - HeaderByte.FAILURE_RESON.getNoOfBytes(),
-				headerStruct.getLength());
+				headerStruct.getHeaderLength());
 
 	}
 
@@ -106,7 +103,7 @@ public class HeaderStructTest {
 	public void getLengthAllEnabled() throws Exception {
 
 		HeaderStruct headerStruct = new HeaderStructBuilder().enableAll().createHeaderStruct();
-		assertEquals(getAllLength(), headerStruct.getLength());
+		assertEquals(getAllLength(), headerStruct.getHeaderLength());
 
 	}
 

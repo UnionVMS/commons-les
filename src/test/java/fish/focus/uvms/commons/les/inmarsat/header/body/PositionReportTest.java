@@ -1,5 +1,6 @@
 package fish.focus.uvms.commons.les.inmarsat.header.body;
 
+import fish.focus.uvms.commons.les.inmarsat.InmarsatException;
 import fish.focus.uvms.commons.les.inmarsat.InmarsatUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,9 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.Collection;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class PositionReportTest {
@@ -23,7 +22,7 @@ public class PositionReportTest {
 	private final String bodyHex;
 
 
-	public PositionReportTest(String bodyHex, PositionReportData positionReportData) {
+	public PositionReportTest(String bodyHex, PositionReportData positionReportData) throws InmarsatException {
 		this.bodyHex = bodyHex;
 		body = InmarsatUtils.hexStringToByteArray(bodyHex);
 		positionReport = PositionReport.createPositionReport(body);
@@ -32,29 +31,34 @@ public class PositionReportTest {
 	}
 
 	@Parameterized.Parameters
-	public static Collection<Object[]> data() {
-		return Arrays.asList(new Object[][] {
-				{"4969384c89ef1e7c402f00000000000000000000",
-						new PositionReportData.Builder().setDataReportFormat(1).setLatHemi(0).setLatDeg(37)
-								.setLatMin(41).setLatMinFrac(28).setLongHemi(0).setLongDeg(19).setLongMin(8)
-								.setLongMinFrac(76).setMem(111).setMonthRes(0).setDay(7).setHour(19).setMinute(56)
-								.setSpeed(12.8).setCourse(94).createPositionReportData()},
-				{"01e1908b7469007a000000000000000000000000",
-						new PositionReportData.Builder().setDataReportFormat(0).setLatHemi(0).setLatDeg(7).setLatMin(33)
-								.setLatMinFrac(72).setLongHemi(0).setLongDeg(34).setLongMin(55).setLongMinFrac(32)
-								.setMem(105).setMonthRes(0).setDay(0).setHour(3).setMinute(52).setSpeed(0).setCourse(0)
-								.createPositionReportData()},
-				{"4def7831f48b1d8a38ba00000000000000000000",
-						new PositionReportData.Builder().setDataReportFormat(1).setLatHemi(0).setLatDeg(55)
-								.setLatMin(47).setLatMinFrac(60).setLongHemi(0).setLongDeg(12).setLongMin(31)
-								.setLongMinFrac(36).setMem(11).setMonthRes(0).setDay(7).setHour(12).setMinute(20)
-								.setSpeed(11.2).setCourse(372).createPositionReportData()}});
+	public static Collection<Object[]> data() throws InmarsatException {
+		return Arrays
+				.asList(new Object[][] {
+				//@formatter:off
+				{"4969384c89ef1e7c402f00000000000000000000", new PositionReportDataBuilder().setDataReportFormat(1)
+								.setLatPosition(new Position(0,37,41,28))
+								.setLongPosition(new Position(0,19,8,76))
+								.setMem(111).setPositionDate(new PositionDate(7,19,56,new PositionDate.PositionDateExtra(2017-1973,2)))
+								.setSpeedAndCourse(new SpeedAndCourse(12.8,94)).createPositionReportData()},
+				{"01e1908b7469007a000000000000000000000000", new PositionReportDataBuilder().setDataReportFormat(0)
+								.setLatPosition(new Position(0,7,33,72))
+								.setLongPosition(new Position(0,34,55,32))
+								.setMem(105).setPositionDate(new PositionDate(0,3,52,null))
+								.setSpeedAndCourse(new SpeedAndCourse(0,0)).createPositionReportData()},
+				{"4def7831f48b1d8a38ba00000000000000000000", new PositionReportDataBuilder().setDataReportFormat(1)
+								.setLatPosition(new Position(0,55,47,60))
+								.setLongPosition(new Position(0,12,31,36))
+								.setMem(11).setPositionDate(new PositionDate(7,12,20,null))
+								.setSpeedAndCourse(new SpeedAndCourse(11.2,372)).createPositionReportData()}
+				//@formatter:on
+		});
+
 	}
 
 
 	@Test
 	public void createBodyFromData() throws Exception {
-		String bodyFromDataHex = PositionReport.createPositionReport(positionReportData).getBodyAsHexString();
+		String bodyFromDataHex = PositionReport.createPositionReport(positionReportData, true).getBodyAsHexString();
 		assertEquals("Body of position report should be same", bodyHex.toUpperCase(), bodyFromDataHex);
 
 	}
@@ -64,9 +68,10 @@ public class PositionReportTest {
 		assertNotNull(positionReport);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void createHeaderNegative() {
-		byte[] cloneBody = Arrays.copyOf(body, PositionReport.DATA_LENGTH - 1);
+	@Test(expected = InmarsatException.class)
+	public void createHeaderNegative() throws InmarsatException {
+		byte[] cloneBody =
+				Arrays.copyOf(body, PositionReport.DATA_PACKET_1_BYTES + PositionReport.DATA_PACKET_2_BYTES + -1);
 
 		PositionReport positionReportClone = PositionReport.createPositionReport(cloneBody);
 		assertFalse(positionReportClone.validate());
@@ -146,7 +151,7 @@ public class PositionReportTest {
 	}
 
 	@Test
-	public void getSpeed() {
+	public void getSpeed() throws InmarsatException {
 		assertEquals("Speed should be same", positionReportData.getSpeed(), positionReport.getSpeed(), 0);
 		byte[] cloneBody = body.clone();
 		cloneBody[8] = (byte) 0xFF;
@@ -161,10 +166,38 @@ public class PositionReportTest {
 	}
 
 	@Test
-	public void toStringTest() {
-		String out = positionReport.toString();
-		LOGGER.info(out);
-		assertNotNull(out);
+	public void getLongitude() {
+		assertEquals("Longitude should be correct",
+				new Position(positionReportData.getLongHemi(), positionReportData.getLongDeg(),
+						positionReportData.getLongMin(), positionReportData.getLongMinFrac()).getAsDouble(),
+				positionReport.getLongitude().getAsDouble(), 0.0005);
 
 	}
+
+	@Test
+	public void getLatitude() {
+
+		assertEquals("Latitude should be correct",
+				new Position(positionReportData.getLatHemi(), positionReportData.getLatDeg(),
+						positionReportData.getLatMin(), positionReportData.getLatMinFrac()).getAsDouble(),
+				positionReport.getLatitude().getAsDouble(), 0);
+	}
+
+
+	@Test
+	public void getPositionDateExtra() {
+		PositionDate.PositionDateExtra positionDateExtra = positionReport.getPositionDateExtra();
+		if (positionDateExtra != null) {
+			assertEquals(positionReportData.getPositionDate().getExtraDate(), positionDateExtra);
+		}
+	}
+
+	@Test
+	public void toStringTest() {
+		String out = positionReport.toString();
+		assertNotNull(out);
+		assertTrue(out.contains("; Speed:" + positionReportData.getSpeed()));
+	}
+
+
 }
