@@ -21,12 +21,48 @@ public class PositionDate {
 	private final int minute;
 	private final PositionDateExtra extraDate;//optional
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		PositionDate that = (PositionDate) o;
+
+		if (day != that.day) return false;
+		if (hour != that.hour) return false;
+		if (minute != that.minute) return false;
+		return extraDate != null ? extraDate.equals(that.extraDate) : that.extraDate == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = day;
+		result = 31 * result + hour;
+		result = 31 * result + minute;
+		result = 31 * result + (extraDate != null ? extraDate.hashCode() : 0);
+		return result;
+	}
+
 	/**
-	 * Create a postion date
+	 * Create a position date (without extradate)
 	 *
 	 * @param day    Value: 0 - 31 (Day of the month)
 	 * @param hour   Value: 0 - 23 (Hour of the day)
 	 * @param minute Value 0 - 29 (Minute within the hour given in units of 2 minutes)
+	 * @throws IllegalArgumentException if not valid day/hour/minute
+	 */
+	public PositionDate(int day, int hour, int minute) throws InmarsatException {
+		this(day,hour, minute,null);
+	}
+
+
+	/**
+	 * Create a postion date with optional extradate
+	 *
+	 * @param day    Value: 0 - 31 (Day of the month)
+	 * @param hour   Value: 0 - 23 (Hour of the day)
+	 * @param minute Value 0 - 29 (Minute within the hour given in units of 2 minutes)
+	 * @param extraDate optional extradate
 	 * @throws IllegalArgumentException if not valid day/hour/minute
 	 */
 	public PositionDate(int day, int hour, int minute, PositionDateExtra extraDate) throws InmarsatException {
@@ -187,12 +223,17 @@ public class PositionDate {
 	static class PositionDateExtra {
 		public static final int FORMAT1_YEARSTART = 1997;
 		public static final int FORMAT2_YEARSTART = 1998;
-		int dateFormat;//(1-3)
-		int year;
-		int month;
-		int day;
-		int hour;
-		int minute;
+		private int dateFormat;//(1-3)
+		private int year;
+		private int month;
+		private int day;
+		private int hour;
+
+		public int getDateFormat() {
+			return dateFormat;
+		}
+
+		private int minute;
 
 		/**
 		 * Create extradate in dateformat 1
@@ -281,6 +322,32 @@ public class PositionDate {
 
 			}
 			return dateTime.getTime();
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			PositionDateExtra that = (PositionDateExtra) o;
+
+			if (dateFormat != that.dateFormat) return false;
+			if (year != that.year) return false;
+			if (month != that.month) return false;
+			if (day != that.day) return false;
+			if (hour != that.hour) return false;
+			return minute == that.minute;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = dateFormat;
+			result = 31 * result + year;
+			result = 31 * result + month;
+			result = 31 * result + day;
+			result = 31 * result + hour;
+			result = 31 * result + minute;
+			return result;
 		}
 	}
 }

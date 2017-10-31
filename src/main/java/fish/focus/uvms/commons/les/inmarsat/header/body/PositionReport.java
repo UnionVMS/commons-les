@@ -289,15 +289,15 @@ public class PositionReport extends InmarsatBody {
 	 * @return detailed date from extra package
 	 */
 	public PositionDate.PositionDateExtra getPositionDateExtra() {
-		if (body.length == DATA_PACKET_1_BYTES && InmarsatConfig.getInstance().isExtraDataEnabled()) {
+		if (body.length == DATA_PACKET_1_BYTES && ! InmarsatConfig.getInstance().isExtraDataEnabled()) {
 			return null; //No extra date
 		}
 
 		switch (InmarsatConfig.getInstance().getExtraDataFormat()) {
 			case 1:
 				//Dateformat1
-				int month = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(0, 3), 2);
-				int year = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(3)
+				int month = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(0, 4), 2);
+				int year = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(4)
 						.concat(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(0, 3)), 2);
 
 				if (PositionDate.PositionDateExtra.validFormat1(year, month)) {
