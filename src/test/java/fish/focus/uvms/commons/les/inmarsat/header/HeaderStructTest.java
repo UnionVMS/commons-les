@@ -123,118 +123,118 @@ public class HeaderStructTest {
 
 
 	@Test
-	public void getPostionStartOfHeader() {
+	public void getPositionStartOfHeader() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().createHeaderStruct();
 		assertEquals(HeaderByte.START_OF_HEADER.getNoOfBytes(),
-				headerStruct.getPostionStartOfHeader() + HeaderByte.START_OF_HEADER.getNoOfBytes());
+				headerStruct.getPositionStartOfHeader() + HeaderByte.START_OF_HEADER.getNoOfBytes());
 
 	}
 
 	@Test
-	public void getPostionLeadText() {
+	public void getPositionLeadText() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().createHeaderStruct();
-		assertEquals(headerStruct.getPostionStartOfHeader() + HeaderByte.START_OF_HEADER.getNoOfBytes(),
-				headerStruct.getPostionLeadText());
+		assertEquals(headerStruct.getPositionStartOfHeader() + HeaderByte.START_OF_HEADER.getNoOfBytes(),
+				headerStruct.getPositionLeadText());
 	}
 
 	@Test
-	public void getPostionType() {
+	public void getPositionType() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().createHeaderStruct();
-		assertEquals(headerStruct.getPostionLeadText() + HeaderByte.LEAD_TEXT.getNoOfBytes(),
-				headerStruct.getPostionType());
+		assertEquals(headerStruct.getPositionLeadText() + HeaderByte.LEAD_TEXT.getNoOfBytes(),
+				headerStruct.getPositionType());
 
 	}
 
 	@Test
-	public void getPostionHeaderLength() {
+	public void getPositionHeaderLength() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().createHeaderStruct();
-		assertEquals(headerStruct.getPostionType() + HeaderByte.TYPE.getNoOfBytes(),
-				headerStruct.getPostionHeaderLength().intValue());
+		assertEquals(headerStruct.getPositionType() + HeaderByte.TYPE.getNoOfBytes(),
+				headerStruct.getPositionHeaderLength().intValue());
 
 	}
 
 	@Test
-	public void getPostionMsgRefNo() {
+	public void getPositionMsgRefNo() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().createHeaderStruct();
-		assertEquals(headerStruct.getPostionHeaderLength() + HeaderByte.HEADER_LENGTH.getNoOfBytes(),
-				headerStruct.getPostionMsgRefNo().intValue());
+		assertEquals(headerStruct.getPositionHeaderLength() + HeaderByte.HEADER_LENGTH.getNoOfBytes(),
+				headerStruct.getPositionMsgRefNo().intValue());
 
 	}
 
 	@Test
-	public void getPostionPresentation() {
+	public void getPositionPresentation() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().enablePresentation().createHeaderStruct();
-		assertEquals(headerStruct.getPostionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
-				headerStruct.getPostionPresentation().intValue());
+		assertEquals(headerStruct.getPositionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
+				headerStruct.getPositionPresentation().intValue());
 
 	}
 
 	@Test
-	public void getPostionFailureReason() {
+	public void getPositionFailureReason() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().enableFailure().createHeaderStruct();
-		assertEquals(headerStruct.getPostionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
-				headerStruct.getPostionFailureReason().intValue());
+		assertEquals(headerStruct.getPositionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
+				headerStruct.getPositionFailureReason().intValue());
 	}
 
 	@Test
-	public void getPostionDeliveryAttempt() {
+	public void getPositionDeliveryAttempt() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().enableDelivery().createHeaderStruct();
-		assertEquals(headerStruct.getPostionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
-				headerStruct.getPostionDeliveryAttempts().intValue());
+		assertEquals(headerStruct.getPositionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
+				headerStruct.getPositionDeliveryAttempts().intValue());
 	}
 
 	@Test
-	public void getPostionSatIdAndLesId() {
+	public void getPositionSatIdAndLesId() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().enableSatIdAndLesId().createHeaderStruct();
-		assertEquals(headerStruct.getPostionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
-				headerStruct.getPostionSatIdAndLesId().intValue());
+		assertEquals(headerStruct.getPositionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
+				headerStruct.getPositionSatIdAndLesId().intValue());
 	}
 
 	@Test
-	public void getPostionSatIdAndLesIdNotEnabled() {
+	public void getPositionSatIdAndLesIdNotEnabled() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().createHeaderStruct();
-		assertNull(headerStruct.getPostionSatIdAndLesId());
+		assertNull(headerStruct.getPositionSatIdAndLesId());
 	}
 
 	@Test
-	public void getPostionDataLength() {
+	public void getPositionDataLength() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().enableDataLength().createHeaderStruct();
-		assertEquals(headerStruct.getPostionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
-				headerStruct.getPostionDataLength().intValue());
+		assertEquals(headerStruct.getPositionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
+				headerStruct.getPositionDataLength().intValue());
 	}
 
 	@Test
-	public void getPostionStoredTime() {
+	public void getPositionStoredTime() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().createHeaderStruct();
-		assertEquals(headerStruct.getPostionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
-				headerStruct.getPostionStoredTime().intValue());
+		assertEquals(headerStruct.getPositionMsgRefNo() + HeaderByte.MSG_REF_NO.getNoOfBytes(),
+				headerStruct.getPositionStoredTime().intValue());
 	}
 
 	@Test
-	public void getPostionDnid() {
+	public void getPositionDnid() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().enableDnid().createHeaderStruct();
-		assertEquals(headerStruct.getPostionStoredTime() + HeaderByte.STORED_TIME.getNoOfBytes(),
-				headerStruct.getPostionDnid().intValue());
+		assertEquals(headerStruct.getPositionStoredTime() + HeaderByte.STORED_TIME.getNoOfBytes(),
+				headerStruct.getPositionDnid().intValue());
 	}
 
 	@Test
-	public void getPostionMemberNo() {
+	public void getPositionMemberNo() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().enableMemberNo().createHeaderStruct();
-		assertEquals(headerStruct.getPostionStoredTime() + HeaderByte.STORED_TIME.getNoOfBytes(),
-				headerStruct.getPostionMemberNo().intValue());
+		assertEquals(headerStruct.getPositionStoredTime() + HeaderByte.STORED_TIME.getNoOfBytes(),
+				headerStruct.getPositionMemberNo().intValue());
 	}
 
 	@Test
-	public void getPostionMesMobNo() {
+	public void getPositionMesMobNo() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().enableMesMobNo().createHeaderStruct();
-		assertEquals(headerStruct.getPostionStoredTime() + HeaderByte.STORED_TIME.getNoOfBytes(),
-				headerStruct.getPostionMesMobNo().intValue());
+		assertEquals(headerStruct.getPositionStoredTime() + HeaderByte.STORED_TIME.getNoOfBytes(),
+				headerStruct.getPositionMesMobNo().intValue());
 	}
 
 	@Test
-	public void getPostionEndOfHeader() {
+	public void getPositionEndOfHeader() {
 		HeaderStruct headerStruct = new HeaderStructBuilder().disableAll().createHeaderStruct();
-		assertEquals(headerStruct.getPostionStoredTime() + HeaderByte.STORED_TIME.getNoOfBytes(),
-				headerStruct.getPostionEndOfHeader().intValue());
+		assertEquals(headerStruct.getPositionStoredTime() + HeaderByte.STORED_TIME.getNoOfBytes(),
+				headerStruct.getPositionEndOfHeader().intValue());
 	}
 }

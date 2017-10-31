@@ -12,6 +12,13 @@ public class InmarsatMessage {
 	private InmarsatHeader header;
 	private InmarsatBody body;
 
+	/**
+	 * Create message
+	 *
+	 * @param header the header
+	 * @param body   the body
+	 * @throws InmarsatException if not valid header or body
+	 */
 	public InmarsatMessage(InmarsatHeader header, InmarsatBody body) throws InmarsatException {
 		this.header = header;
 		this.body = body;
@@ -24,6 +31,7 @@ public class InmarsatMessage {
 	 * Parses bytes and returns the the first message
 	 *
 	 * @param byteMessages the fist message
+	 * @throws InmarsatException if not valid message
 	 */
 	public InmarsatMessage(byte[] byteMessages) throws InmarsatException {
 

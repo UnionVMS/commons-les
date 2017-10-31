@@ -1,6 +1,6 @@
 package fish.focus.uvms.commons.les.inmarsat.header.body;
 
-import fish.focus.uvms.commons.les.inmarsat.InmarsatDefintion;
+import fish.focus.uvms.commons.les.inmarsat.InmarsatDefinition;
 import fish.focus.uvms.commons.les.inmarsat.InmarsatException;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -141,14 +141,13 @@ public class PositionDateTest {
 	}
 
 	@Test
-	public void getDatefromDateExtraFormat1() throws InmarsatException {
+	public void getDateFromDateExtraFormat_1() throws InmarsatException {
 		int nowYear = 2017;
 		int nowMonth = Calendar.MARCH;
 		int nowDay = 31;
 		int nowHour = 0;
 		int nowMin = 2;// Must be in power of 2...
 
-		final int posMonth = Calendar.JANUARY;
 		final int posHour = nowHour + 1;
 		final int posMin = nowMin / 2;
 
@@ -166,14 +165,13 @@ public class PositionDateTest {
 	}
 
 	@Test
-	public void getDatefromDateExtraFormat2() throws InmarsatException {
+	public void getDateFromDateExtraFormat_2() throws InmarsatException {
 		int nowYear = 2017;
 		int nowMonth = Calendar.MARCH;
 		int nowDay = 31;
 		int nowHour = 0;
 		int nowMin = 2;// Must be in power of 2...
 
-		final int posMonth = Calendar.JANUARY;
 		final int posHour = nowHour + 1;
 		final int posMin = nowMin / 2;
 
@@ -194,14 +192,13 @@ public class PositionDateTest {
 	}
 
 	@Test
-	public void getDatefromDateExtraFormat3() throws InmarsatException {
+	public void getDateFromDateExtraFormat_3() throws InmarsatException {
 		int nowYear = 2017;
 		int nowMonth = Calendar.MARCH;
 		int nowDay = 31;
 		int nowHour = 0;
 		int nowMin = 2;// Must be in power of 2...
 
-		final int posMonth = Calendar.JANUARY;
 		final int posHour = nowHour + 1;
 		final int posMin = nowMin / 2;
 
@@ -224,7 +221,7 @@ public class PositionDateTest {
 			final int nowMin) {
 		Calendar now = Calendar.getInstance();
 		now.clear();
-		now.setTimeZone(InmarsatDefintion.API_TIMEZONE);
+		now.setTimeZone(InmarsatDefinition.API_TIMEZONE);
 		now.set(nowYear, nowMonth, nowDay, nowHour, nowMin);
 		return now;
 	}

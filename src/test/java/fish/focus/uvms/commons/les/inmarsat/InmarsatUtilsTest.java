@@ -120,7 +120,7 @@ public class InmarsatUtilsTest {
 
 
 	@Test
-	public void bytesArrrayToHex() throws Exception {
+	public void bytesArrayToHex() throws Exception {
 		byte[] bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, (byte) 0x98, 9, (byte) 0xFF, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 				127, (byte) 128};
 		String actual = InmarsatUtils.bytesArrayToHexString(bytes);

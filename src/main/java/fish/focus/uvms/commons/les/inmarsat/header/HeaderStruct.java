@@ -4,7 +4,7 @@ import java.util.EnumMap;
 
 /**
  *
- * Header structure for the typse
+ * Header structure for the types
  <div>
  <table>
  <thead><tr><th>Field</th><th>DNID</th><th>DNID_MSG</th><th>MSG</th><th>PDN</th><th>NDN</th></tr></thead><tbody>
@@ -23,7 +23,7 @@ import java.util.EnumMap;
  <tr><td>MEMBER_NO</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
  <tr><td>MES_MOB_NO</td><td>0</td><td>4</td><td>4</td><td>4</td><td>4</td></tr>
  <tr><td>END_OF_HEADER</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
- <tr><td>Summa</td><td>22</td><td>25</td><td>23</td><td>20</td><td>21</td></tr>
+ <tr><td>Sum</td><td>22</td><td>25</td><td>23</td><td>20</td><td>21</td></tr>
  </tbody></table>
  </div>
 
@@ -147,67 +147,67 @@ public class HeaderStruct {
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	public int getPostionStartOfHeader() {
+	public int getPositionStartOfHeader() {
 		return POS_START_OF_HEADER_POS;
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	public int getPostionLeadText() {
+	public int getPositionLeadText() {
 		return POS_LEAD_TEXT_0;
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	public int getPostionType() {
+	public int getPositionType() {
 		return POS_TYPE;
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	public Integer getPostionHeaderLength() {
+	public Integer getPositionHeaderLength() {
 		return POS_HEADER_LENGTH;
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	public Integer getPostionMsgRefNo() {
+	public Integer getPositionMsgRefNo() {
 		return POS_REF_NO_START;
 	}
 
-	public Integer getPostionPresentation() {
+	public Integer getPositionPresentation() {
 		return lhs.get(HeaderByte.PRESENTATION);
 	}
 
-	public Integer getPostionFailureReason() {
+	public Integer getPositionFailureReason() {
 		return lhs.get(HeaderByte.FAILURE_RESON);
 	}
 
-	public Integer getPostionDeliveryAttempts() {
+	public Integer getPositionDeliveryAttempts() {
 		return lhs.get(HeaderByte.DELIVERY_ATTEMPTS);
 	}
 
-	public Integer getPostionSatIdAndLesId() {
+	public Integer getPositionSatIdAndLesId() {
 		return lhs.get(HeaderByte.SATID_AND_LESID);
 	}
 
-	public Integer getPostionDataLength() {
+	public Integer getPositionDataLength() {
 		return lhs.get(HeaderByte.DATA_LENGTH);
 	}
 
-	public Integer getPostionStoredTime() {
+	public Integer getPositionStoredTime() {
 		return lhs.get(HeaderByte.STORED_TIME);
 	}
 
-	public Integer getPostionDnid() {
+	public Integer getPositionDnid() {
 		return lhs.get(HeaderByte.DNID);
 	}
 
-	public Integer getPostionMemberNo() {
+	public Integer getPositionMemberNo() {
 		return lhs.get(HeaderByte.MEMBER_NO);
 	}
 
-	public Integer getPostionMesMobNo() {
+	public Integer getPositionMesMobNo() {
 		return lhs.get(HeaderByte.MES_MOB_NO);
 	}
 
-	public Integer getPostionEndOfHeader() {
+	public Integer getPositionEndOfHeader() {
 		return lhs.get(HeaderByte.END_OF_HEADER);
 	}
 

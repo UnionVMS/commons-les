@@ -8,7 +8,7 @@ public class InmarsatExceptionTest {
 
 	@Test(expected = InmarsatException.class)
 	public void constructorWithNoCause() throws InmarsatException {
-		String message = "Test";;
+		String message = "Test";
 		InmarsatException ie = new InmarsatException(message);
 		assertEquals(message, ie.getMessage());
 		assertNull(ie.getCause());

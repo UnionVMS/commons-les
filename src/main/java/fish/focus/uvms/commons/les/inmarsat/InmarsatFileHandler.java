@@ -1,16 +1,16 @@
 package fish.focus.uvms.commons.les.inmarsat;
 
 
+import fish.focus.uvms.commons.les.inmarsat.header.HeaderDataPresentation;
 import fish.focus.uvms.commons.les.inmarsat.header.HeaderStruct;
+import fish.focus.uvms.commons.les.inmarsat.header.HeaderType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -18,17 +18,23 @@ public class InmarsatFileHandler {
 	public static final String ERROR_DIR_NAME = "error";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(InmarsatFileHandler.class);
-	private static final byte[] HEADER_PATTERN = ByteBuffer.allocate(4).put((byte) InmarsatDefintion.API_SOH)
-			.put(InmarsatDefintion.API_LEAD_TEXT.getBytes()).array();
+	private static final byte[] HEADER_PATTERN = ByteBuffer.allocate(4).put((byte) InmarsatDefinition.API_SOH)
+			.put(InmarsatDefinition.API_LEAD_TEXT.getBytes()).array();
 	private static final int PATTERN_LENGTH = HEADER_PATTERN.length;
 	private final Path downloadDir;
 	private final Path errorDir;
 
 	public InmarsatFileHandler(Path downloadDir) {
 		this.downloadDir = downloadDir;
-		this.errorDir = Paths.get(downloadDir.getParent().toString(), ERROR_DIR_NAME);
+		this.errorDir = Paths.get(downloadDir.toString(), ERROR_DIR_NAME);
 	}
 
+	/**
+	 * Create a list of files with its inmarsat messages from supplied directory
+	 *
+	 * @return Map of file and messages parsed from the supplied directory
+	 * @throws IOException if the directory couldn't be read
+	 */
 	public ConcurrentMap<Path, InmarsatMessage[]> createMessages() throws IOException {
 		String pattern = new String(HEADER_PATTERN);
 		List<Path> fileNames = listFiles(downloadDir);
@@ -50,11 +56,11 @@ public class InmarsatFileHandler {
 
 				String fileStr = new String(fileBytes);
 				if (fileStr.contains(pattern)) {
-					inmarsatMessages = byteToInmMessge(fileBytes, file);
+					inmarsatMessages = byteToInmMessage(fileBytes, file);
 					output.put(file, inmarsatMessages);
 				} else {
-					LOGGER.error("File is not a valid Inmarsat Message: {} - moved", file);
-					moveFileToDir(file, errorDir);
+					LOGGER.error("File is not a valid Inmarsat Message: {} - deleted", file);
+					Files.delete(file);
 				}
 
 			}
@@ -63,8 +69,8 @@ public class InmarsatFileHandler {
 		return output;
 	}
 
-	public InmarsatMessage[] byteToInmMessge(final byte[] fileBytes, Path file) {
-		byte[] bytes = insertMissingMemberNo(fileBytes);
+	public InmarsatMessage[] byteToInmMessage(final byte[] fileBytes, Path file) {
+		byte[] bytes = insertMissingData(fileBytes);
 
 		ArrayList<InmarsatMessage> messages = new ArrayList<>();
 
@@ -74,8 +80,7 @@ public class InmarsatFileHandler {
 
 			return new InmarsatMessage[] {};
 		}
-
-
+		boolean errorInfile = false;
 		//Parse bytes for messages
 		for (int i = 0; i < (bytes.length - PATTERN_LENGTH); i++) {
 			//Find message
@@ -85,9 +90,11 @@ public class InmarsatFileHandler {
 				try {
 					message = new InmarsatMessage(messageBytes);
 				} catch (InmarsatException e) {
-					LOGGER.error("Something wrong with file {}, contents: {}, errormsg:{}",
+					LOGGER.error(
+							"Something wrong with file {} and it will be moved to error dir, contents: {}, error msg:{}",
 							file.getFileName().toString(), InmarsatUtils.bytesArrayToHexString(messageBytes),
 							e.getMessage());
+					errorInfile = true;
 					continue;
 				}
 
@@ -97,6 +104,9 @@ public class InmarsatFileHandler {
 					LOGGER.info("Message in file {} rejected:{}", file.getFileName(), message);
 				}
 			}
+		}
+		if (errorInfile) {
+			moveFileToDir(file, errorDir);
 		}
 
 		return messages.toArray(new InmarsatMessage[0]); // "new InmarsatMessage[0]" is used  instead of "new Inmarsat[messages.size()]" to get better performance
@@ -111,7 +121,7 @@ public class InmarsatFileHandler {
 			}
 
 		} catch (DirectoryIteratorException ex) {
-			// I/O error encounted during the iteration, the cause is an IOException
+			// I/O error encountered during the iteration, the cause is an IOException
 			LOGGER.info("No dir {} , or unable to readBytesFromFile", dir);
 			throw ex.getCause();
 		}
@@ -132,39 +142,118 @@ public class InmarsatFileHandler {
 	}
 
 	/**
-	 * If headers are missing member number this method insert a default memberno(0xFF)
+	 * Header sent doesn't always adhere to the byte contract..
+	 * This method tries to insert fix the missing parts..
 	 *
-	 * @param contents bytes that might contain headers with/without member number
-	 * @return bytemessages with missing member number set to 0xFF
+	 * @param contents bytes that might contain miss some bytes
+	 * @return message with fixed bytes
 	 */
-	public byte[] insertMissingMemberNo(byte[] contents) {
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		boolean insertFF = false;
+	public byte[] insertMissingData(byte[] contents) {
+		byte[] output = insertMissingMsgRefNo(contents);
+		output = insertMissingStoredTime(output);
+		output = insertMissingMemberNo(output);
+		return output;
 
+	}
+
+	private byte[] insertMissingMsgRefNo(final byte[] contents) {
+		byte[] input = contents.clone();
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		//Missing last MsgRefNo- insert #00 in before presentation..
+		boolean insert = false;
 		int insertPosition = 0;
-		for (int i = 0; i < contents.length; i++) {
+		for (int i = 0; i < input.length; i++) {
 			//Find SOH
-			if (InmarsatHeader.isStartOfMessage(contents, i)) {
-				int headerLength = contents[i + HeaderStruct.POS_HEADER_LENGTH];
+			if (InmarsatHeader.isStartOfMessage(input, i)) {
+				byte[] header = Arrays.copyOfRange(input, i, input.length);
+				HeaderType headerType = InmarsatHeader.getType(header);
+
+				if (headerType.getHeaderStruct().isPresentation()) {
+					HeaderDataPresentation presentation = InmarsatHeader.getDataPresentation(header);
+
+					if (presentation == null) {
+						LOGGER.debug("Presentation is not correct so we add 00 to msg ref no");
+						insert = true;
+						insertPosition = i + HeaderStruct.POS_REF_NO_END;
+					}
+				}
+			}
+			if (insert && (insertPosition == i)) {
+				insert = false;
+				insertPosition = 0;
+				output.write((byte) 0x00);
+			}
+			output.write(input[i]);
+		}
+		return output.toByteArray();
+
+	}
+
+	private byte[] insertMissingStoredTime(byte[] contents) {
+		//Missing Date byte (incorrect date..)? - insert #00 in date first position
+		byte[] input = contents.clone();
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		boolean insert = false;
+		int insertPosition = 0;
+
+		for (int i = 0; i < input.length; i++) {
+			//Find SOH
+			if (InmarsatHeader.isStartOfMessage(input, i)) {
+				byte[] header = Arrays.copyOfRange(input, i, input.length);
+				HeaderType headerType = InmarsatHeader.getType(header);
+
+				Date headerDate = InmarsatHeader.getStoredTime(header);
+
+				if (headerDate.after(Calendar.getInstance(InmarsatDefinition.API_TIMEZONE).getTime())) {
+					LOGGER.debug("Stored time is not correct so we add 00 to in first position");
+					insert = true;
+					insertPosition = i + headerType.getHeaderStruct().getPositionStoredTime();
+				}
+
+			}
+			if (insert && (insertPosition == i)) {
+				insert = false;
+				insertPosition = 0;
+				output.write((byte) 0x00);
+			}
+			output.write(input[i]);
+		}
+		return output.toByteArray();
+	}
+
+	private byte[] insertMissingMemberNo(byte[] contents) {
+
+		//Missing Member number - insert #FF before EOH
+		//continue from previous cleaned data
+		byte[] input = contents.clone();
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		boolean insert = false;
+		int insertPosition = 0;
+
+		for (int i = 0; i < input.length; i++) {
+			//Find SOH
+			if (InmarsatHeader.isStartOfMessage(input, i)) {
+				int headerLength = input[i + HeaderStruct.POS_HEADER_LENGTH];
 				int expectedEOHPosition = i + headerLength - 1;
 				//Check if memberNo exits
-				if ((expectedEOHPosition >= contents.length)
-						|| ((contents[expectedEOHPosition - 1] == (byte) InmarsatDefintion.API_EOH)
-								&& contents[expectedEOHPosition] != (byte) InmarsatDefintion.API_EOH)) {
-					insertFF = true;
+				if ((expectedEOHPosition >= input.length)
+						|| ((input[expectedEOHPosition - 1] == (byte) InmarsatDefinition.API_EOH)
+								&& input[expectedEOHPosition] != (byte) InmarsatDefinition.API_EOH)) {
+					insert = true;
 					insertPosition = expectedEOHPosition - 1;
 				}
 
 			}
 			//Find EOH
-			if (insertFF && (contents[i] == (byte) InmarsatDefintion.API_EOH) && (insertPosition == i)) {
+			if (insert && (input[i] == (byte) InmarsatDefinition.API_EOH) && (insertPosition == i)) {
+				LOGGER.debug("Message is missing member no");
 				output.write((byte) 0xFF);
-				insertFF = false;
+				insert = false;
+				insertPosition = 0;
 
 			}
-			output.write(contents[i]);
+			output.write(input[i]);
 		}
 		return output.toByteArray();
 	}
-
 }

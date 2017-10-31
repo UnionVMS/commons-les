@@ -101,13 +101,13 @@ public class InmarsatHeaderTest {
 
 	@Test
 	public void getStartOfHeader() {
-		assertEquals(InmarsatDefintion.API_SOH, iHeader.getStartOfHeader());
-		assertEquals(InmarsatDefintion.API_SOH, iHeader.header[HeaderStruct.POS_START_OF_HEADER_POS]);
+		assertEquals(InmarsatDefinition.API_SOH, iHeader.getStartOfHeader());
+		assertEquals(InmarsatDefinition.API_SOH, iHeader.header[HeaderStruct.POS_START_OF_HEADER_POS]);
 	}
 
 	@Test
 	public void getLeadText() {
-		assertEquals(InmarsatDefintion.API_LEAD_TEXT, new String(iHeader.getLeadText()));
+		assertEquals(InmarsatDefinition.API_LEAD_TEXT, new String(iHeader.getLeadText()));
 	}
 
 	@Test
@@ -147,7 +147,7 @@ public class InmarsatHeaderTest {
 
 	@Test
 	public void getSatId() {
-		Integer position = iHeader.getType().getHeaderStruct().getPostionSatIdAndLesId();
+		Integer position = iHeader.getType().getHeaderStruct().getPositionSatIdAndLesId();
 		if (headerData.getSatIdAndLesId() > 0) {
 			SatId idExpected = SatId.fromInt(InmarsatUtils.digitAt(headerData.getSatIdAndLesId(), 3));
 			assertEquals(idExpected, iHeader.getSatId(position));
@@ -159,7 +159,7 @@ public class InmarsatHeaderTest {
 
 	@Test
 	public void getLesId() {
-		Integer position = iHeader.getType().getHeaderStruct().getPostionSatIdAndLesId();
+		Integer position = iHeader.getType().getHeaderStruct().getPositionSatIdAndLesId();
 		if (headerData.getSatIdAndLesId() > 0) {
 			int idExpected = headerData.getSatIdAndLesId() % 100;
 			assertEquals(idExpected, iHeader.getLesId(position));
@@ -197,8 +197,8 @@ public class InmarsatHeaderTest {
 
 	@Test
 	public void getEndOfHeader() {
-		assertEquals(InmarsatDefintion.API_EOH, iHeader.getEndOfHeader());
-		assertEquals(InmarsatDefintion.API_EOH, iHeader.header[iHeader.getHeaderLength() - 1]);
+		assertEquals(InmarsatDefinition.API_EOH, iHeader.getEndOfHeader());
+		assertEquals(InmarsatDefinition.API_EOH, iHeader.header[iHeader.getHeaderLength() - 1]);
 	}
 
 	@Test

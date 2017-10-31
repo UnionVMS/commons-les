@@ -32,14 +32,15 @@ public class PositionReport extends InmarsatBody {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PositionReport.class);
 
+
 	private PositionReport() {
 		super();
 	}
 
 	/**
-	 * @param body for a positionreport
+	 * @param body for a position report
 	 * @return a PositionReport
-	 * @throws IllegalArgumentException if not a valid body
+	 * @throws InmarsatException if not a valid body
 	 */
 	public static PositionReport createPositionReport(byte[] body) throws InmarsatException {
 		PositionReport posReport = new PositionReport();
@@ -51,6 +52,12 @@ public class PositionReport extends InmarsatBody {
 		return posReport;
 	}
 
+
+	/**
+	 * @param positionReportData for a position report
+	 * @return a PositionReport
+	 * @throws InmarsatException if not a valid body
+	 */
 	public static PositionReport createPositionReport(PositionReportData positionReportData, boolean includePackage2)
 			throws InmarsatException {
 		PositionReport posReport = new PositionReport();
@@ -93,6 +100,7 @@ public class PositionReport extends InmarsatBody {
 			LOGGER.debug("Not a valid Position report body: {}", body);
 			throw new InmarsatException("Not a valid Position report body");
 		}
+
 		return posReport;
 	}
 
@@ -102,6 +110,13 @@ public class PositionReport extends InmarsatBody {
 			LOGGER.debug("Position report data length not valid: {}", body);
 			return false;
 		}
+		//validate body data
+		try {
+			getPositionDate();
+		} catch (InmarsatException ie) {
+			return false;
+		}
+
 
 		return true;
 	}
@@ -286,7 +301,7 @@ public class PositionReport extends InmarsatBody {
 	/**
 	 * Detailed date information
 	 *
-	 * @return detailed date from extra package
+	 * @return {@link fish.focus.uvms.commons.les.inmarsat.header.body.PositionDate.PositionDateExtra} detailed date from extra package
 	 */
 	public PositionDate.PositionDateExtra getPositionDateExtra() {
 		if (body.length == DATA_PACKET_1_BYTES && !InmarsatConfig.getInstance().isExtraDataEnabled()) {
@@ -295,7 +310,7 @@ public class PositionReport extends InmarsatBody {
 
 		switch (InmarsatConfig.getInstance().getExtraDataFormat()) {
 			case 1:
-				//Dateformat1
+				//Date format 1
 				int month = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(0, 4), 2);
 				int year = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(4)
 						.concat(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(0, 3)), 2);
@@ -305,7 +320,7 @@ public class PositionReport extends InmarsatBody {
 				}
 				break;
 			case 2:
-				//Dateformat2
+				//Date format 2
 				year = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(1), 2);
 				month = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(0, 4), 2);
 				int day = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(4)
@@ -319,7 +334,7 @@ public class PositionReport extends InmarsatBody {
 				}
 				break;
 			case 3:
-				//Dateformat3
+				//Date format 3
 				year = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(1)
 						.concat(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(0, 5)), 2);
 				month = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(5)
@@ -352,6 +367,11 @@ public class PositionReport extends InmarsatBody {
 				getLongitudeMinuteFractions());
 	}
 
+	/**
+	 * Position date
+	 * @return the position date
+	 * @throws InmarsatException @see {@link PositionDate#PositionDate(int, int, int, PositionDate.PositionDateExtra)}
+	 */
 	public PositionDate getPositionDate() throws InmarsatException {
 		return new PositionDate(getDayOfMonth(), getHour(), getMinutes(), getPositionDateExtra());
 	}
@@ -362,7 +382,7 @@ public class PositionReport extends InmarsatBody {
 
 		return "Data report type:" + getDataReportFormat() + "; Latitude:" + getLatitudeDegrees() + " Deg, "
 				+ getLatitudeMinutes() + " Min, " + getLatitudeMinuteFractions() + " FractionOfMin "
-				+ getLatitudeHemisphere() + "; Longtude:" + getLongitudeDegrees() + " Deg, " + getLongitudeMinutes()
+				+ getLatitudeHemisphere() + "; Longitude:" + getLongitudeDegrees() + " Deg, " + getLongitudeMinutes()
 				+ " Min, " + getLongitudeMinuteFractions() + " FractionOfMin " + getLongitudeHemisphere()
 				+ "; Mem type:" + getMacroEncodedMessage() + "; Day of month:" + getDayOfMonth() + "; Time:" + getHour()
 				+ ":" + getMinutes() + "; Speed:" + getSpeed() + "; Course:" + getCourse();

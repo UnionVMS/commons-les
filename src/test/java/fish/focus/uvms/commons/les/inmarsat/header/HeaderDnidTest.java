@@ -86,7 +86,7 @@ public class HeaderDnidTest {
 	}
 
 	@Test
-	public void getDataPresentaion() {
+	public void getDataPresentation() {
 		assertEquals(dataPresentation, headerDnid.getDataPresentation());
 	}
 

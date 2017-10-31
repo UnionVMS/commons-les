@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.TimeZone;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public final class InmarsatDefintion {
+public final class InmarsatDefinition {
 	public static final Charset API_CHARSET = StandardCharsets.US_ASCII;
 	public static final TimeZone API_TIMEZONE = TimeZone.getTimeZone("UTC");
 
@@ -37,5 +37,5 @@ public final class InmarsatDefintion {
 	public static final int API_MSG_DELETED_BY_USER = 0x13;
 	public static final int API_MSG_OR_NOT_COVERED = 0x14;
 
-	private InmarsatDefintion() {}
+	private InmarsatDefinition() {}
 }

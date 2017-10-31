@@ -1,8 +1,5 @@
 package fish.focus.uvms.commons.les.inmarsat;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public abstract class InmarsatBody {
 	protected byte[] body = null;
 

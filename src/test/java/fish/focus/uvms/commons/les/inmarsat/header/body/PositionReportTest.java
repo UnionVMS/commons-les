@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -17,7 +15,6 @@ import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class PositionReportTest {
-	private final static Logger LOGGER = LoggerFactory.getLogger(PositionReportTest.class);
 
 
 	private final PositionReport positionReport;

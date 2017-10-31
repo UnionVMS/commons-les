@@ -1,6 +1,6 @@
 package fish.focus.uvms.commons.les.inmarsat.header.body;
 
-import fish.focus.uvms.commons.les.inmarsat.InmarsatDefintion;
+import fish.focus.uvms.commons.les.inmarsat.InmarsatDefinition;
 import fish.focus.uvms.commons.les.inmarsat.InmarsatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +21,41 @@ public class PositionDate {
 	private final int minute;
 	private final PositionDateExtra extraDate;//optional
 
+	/**
+	 * Create a position date (without extradate)
+	 *
+	 * @param day    Value: 0 - 31 (Day of the month)
+	 * @param hour   Value: 0 - 23 (Hour of the day)
+	 * @param minute Value 0 - 29 (Minute within the hour given in units of 2 minutes)
+	 * @throws InmarsatException if not valid day/hour/minute
+	 */
+	public PositionDate(int day, int hour, int minute) throws InmarsatException {
+		this(day, hour, minute, null);
+	}
+
+	/**
+	 * Create a position date with optional extradate
+	 *
+	 * @param day       Value: 0 - 31 (Day of the month)
+	 * @param hour      Value: 0 - 23 (Hour of the day)
+	 * @param minute    Value 0 - 29 (Minute within the hour given in units of 2 minutes)
+	 * @param extraDate optional extradate
+	 * @throws InmarsatException if not valid date
+	 */
+	public PositionDate(int day, int hour, int minute, PositionDateExtra extraDate) throws InmarsatException {
+		this.day = day;
+		this.hour = hour;
+		this.minute = minute;
+		this.extraDate = extraDate;
+
+		if (!validate() || ((extraDate != null) && !(extraDate.validate()))) {
+			LOGGER.warn("Not valid date for position - day:{}, hour:{}, min:{}", day, hour, minute);
+			throw new InmarsatException("Not valid date for position");
+		}
+
+	}
+
+	@SuppressWarnings("SimplifiableIfStatement")
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -34,6 +69,7 @@ public class PositionDate {
 			return false;
 		if (hour != that.hour)
 			return false;
+		//noinspection SimplifiableIfStatement
 		if (minute != that.minute)
 			return false;
 		return extraDate != null ? extraDate.equals(that.extraDate) : that.extraDate == null;
@@ -49,48 +85,15 @@ public class PositionDate {
 	}
 
 	/**
-	 * Create a position date (without extradate)
-	 *
-	 * @param day    Value: 0 - 31 (Day of the month)
-	 * @param hour   Value: 0 - 23 (Hour of the day)
-	 * @param minute Value 0 - 29 (Minute within the hour given in units of 2 minutes)
-	 * @throws IllegalArgumentException if not valid day/hour/minute
-	 */
-	public PositionDate(int day, int hour, int minute) throws InmarsatException {
-		this(day, hour, minute, null);
-	}
-
-
-	/**
-	 * Create a postion date with optional extradate
-	 *
-	 * @param day    Value: 0 - 31 (Day of the month)
-	 * @param hour   Value: 0 - 23 (Hour of the day)
-	 * @param minute Value 0 - 29 (Minute within the hour given in units of 2 minutes)
-	 * @param extraDate optional extradate
-	 * @throws IllegalArgumentException if not valid day/hour/minute
-	 */
-	public PositionDate(int day, int hour, int minute, PositionDateExtra extraDate) throws InmarsatException {
-		if (!validate(day, hour, minute)) {
-			LOGGER.warn("Not valid date for position - day:{}, hour:{}, min:{}", day, hour, minute);
-			throw new InmarsatException("Not valid date for position");
-		}
-		this.day = day;
-		this.hour = hour;
-		this.minute = minute;
-		this.extraDate = extraDate;
-	}
-
-
-	/**
 	 * Validate day/hour/min
 	 *
 	 * @return true if day/hour/minute is in correct range
 	 */
-	public boolean validate(int day, int hour, int minute) {
+	public boolean validate() {
 		if ((0 <= day && day <= 31) || (0 <= hour && hour <= 23) || (0 <= minute && minute <= 29)) {
 			return true;
 		}
+
 		LOGGER.debug("Not valid date for position - day:{}, hour:{}, min:{}", day, hour, minute);
 		return false;
 	}
@@ -137,7 +140,7 @@ public class PositionDate {
 	}
 
 	public Calendar getNowUtc() {
-		return Calendar.getInstance(InmarsatDefintion.API_TIMEZONE);
+		return Calendar.getInstance(InmarsatDefinition.API_TIMEZONE);
 	}
 
 	public Date getDate() {
@@ -152,7 +155,7 @@ public class PositionDate {
 
 		Calendar dateTime = Calendar.getInstance();
 		dateTime.clear();
-		dateTime.setTimeZone(InmarsatDefintion.API_TIMEZONE);
+		dateTime.setTimeZone(InmarsatDefinition.API_TIMEZONE);
 		int nowYear = now.get(Calendar.YEAR);
 		int nowMonth = now.get(Calendar.MONTH);
 		int nowDay = now.get(Calendar.DAY_OF_MONTH);
@@ -233,11 +236,6 @@ public class PositionDate {
 		private int month;
 		private int day;
 		private int hour;
-
-		public int getDateFormat() {
-			return dateFormat;
-		}
-
 		private int minute;
 
 		/**
@@ -273,20 +271,6 @@ public class PositionDate {
 			this.minute = min;
 		}
 
-		public boolean validate() {
-			switch (dateFormat) {
-				case 1:
-					return validFormat1(year, month);
-				case 2:
-					return validFormat2(year, month, day, hour, minute);
-				case 3:
-					return validFormat3(year, month, day, hour, minute);
-				default:
-					return false;
-			}
-
-		}
-
 		public static boolean validMonth(int month) {
 			return (1 <= month) && (month <= 12);
 		}
@@ -307,11 +291,29 @@ public class PositionDate {
 			return ((0 <= year) && (year <= 4095)) && validMonth(month) && validDayHourMinute(day, hour, minute);
 		}
 
+		public int getDateFormat() {
+			return dateFormat;
+		}
+
+		public boolean validate() {
+			switch (dateFormat) {
+				case 1:
+					return validFormat1(year, month);
+				case 2:
+					return validFormat2(year, month, day, hour, minute);
+				case 3:
+					return validFormat3(year, month, day, hour, minute);
+				default:
+					return false;
+			}
+
+		}
+
 		@SuppressWarnings("MagicConstant")
 		public Date getDate(PositionDate baseDate) {
 			Calendar dateTime = Calendar.getInstance();
 			dateTime.clear();
-			dateTime.setTimeZone(InmarsatDefintion.API_TIMEZONE);
+			dateTime.setTimeZone(InmarsatDefinition.API_TIMEZONE);
 			if (dateFormat == 1) {
 				//Extra: Year, month
 				dateTime.set(FORMAT1_YEARSTART + year, month - 1, baseDate.getDay(), baseDate.getHour(),
@@ -329,6 +331,7 @@ public class PositionDate {
 			return dateTime.getTime();
 		}
 
+		@SuppressWarnings("SimplifiableIfStatement")
 		@Override
 		public boolean equals(Object o) {
 			if (this == o)
@@ -346,6 +349,7 @@ public class PositionDate {
 				return false;
 			if (day != that.day)
 				return false;
+			//noinspection SimplifiableIfStatement
 			if (hour != that.hour)
 				return false;
 			return minute == that.minute;
