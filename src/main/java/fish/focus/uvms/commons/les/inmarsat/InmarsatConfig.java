@@ -12,10 +12,10 @@ public class InmarsatConfig {
 		return SingletonHelper.INSTANCE;
 	}
 
-    public void setToDefault() {
-        extraDataEnabled = DEFAULT_EXTRA_DATA_ENABLED;
-        extraDataFormat = DEFAULT_EXTRA_DATA_FORMAT;
-    }
+	public void setToDefault() {
+		extraDataEnabled = DEFAULT_EXTRA_DATA_ENABLED;
+		extraDataFormat = DEFAULT_EXTRA_DATA_FORMAT;
+	}
 
 	public boolean isExtraDataEnabled() {
 		return extraDataEnabled;

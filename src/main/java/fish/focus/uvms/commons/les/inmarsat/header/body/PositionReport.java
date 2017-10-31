@@ -289,7 +289,7 @@ public class PositionReport extends InmarsatBody {
 	 * @return detailed date from extra package
 	 */
 	public PositionDate.PositionDateExtra getPositionDateExtra() {
-		if (body.length == DATA_PACKET_1_BYTES && ! InmarsatConfig.getInstance().isExtraDataEnabled()) {
+		if (body.length == DATA_PACKET_1_BYTES && !InmarsatConfig.getInstance().isExtraDataEnabled()) {
 			return null; //No extra date
 		}
 

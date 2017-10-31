@@ -231,9 +231,9 @@ public class PositionDateTest {
 
 	@Test
 	public void equalsAndHashCode() throws InmarsatException {
-		PositionDate  positionDate1 = new PositionDate(23,1,2);
-		PositionDate  positionDate2 = new PositionDate(23,1,2);
-		PositionDate  positionDate3 = new PositionDate(23,1,3);
+		PositionDate positionDate1 = new PositionDate(23, 1, 2);
+		PositionDate positionDate2 = new PositionDate(23, 1, 2);
+		PositionDate positionDate3 = new PositionDate(23, 1, 3);
 
 		assertEquals(positionDate1, positionDate2);
 		assertEquals(positionDate2, positionDate1);
@@ -242,13 +242,15 @@ public class PositionDateTest {
 		assertNotEquals(positionDate1, positionDate3);
 		assertNotEquals(positionDate1.hashCode(), positionDate3.hashCode());
 
-		positionDate3 = new PositionDate(23,1,2, new PositionDate.PositionDateExtra(2015-PositionDate.PositionDateExtra.FORMAT1_YEARSTART, Calendar.DECEMBER+1));
+		positionDate3 = new PositionDate(23, 1, 2, new PositionDate.PositionDateExtra(
+				2015 - PositionDate.PositionDateExtra.FORMAT1_YEARSTART, Calendar.DECEMBER + 1));
 
 		assertNotEquals(positionDate1, positionDate3);
 		assertNotEquals(positionDate3, positionDate1);
 		assertNotEquals(positionDate1.hashCode(), positionDate3.hashCode());
 
-		PositionDate positionDate4 = new PositionDate(23,1,2, new PositionDate.PositionDateExtra(2015-PositionDate.PositionDateExtra.FORMAT1_YEARSTART, Calendar.DECEMBER+1));
+		PositionDate positionDate4 = new PositionDate(23, 1, 2, new PositionDate.PositionDateExtra(
+				2015 - PositionDate.PositionDateExtra.FORMAT1_YEARSTART, Calendar.DECEMBER + 1));
 		assertEquals(positionDate3, positionDate4);
 		assertEquals(positionDate4, positionDate3);
 		assertEquals(positionDate3.hashCode(), positionDate4.hashCode());

@@ -23,14 +23,19 @@ public class PositionDate {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 
 		PositionDate that = (PositionDate) o;
 
-		if (day != that.day) return false;
-		if (hour != that.hour) return false;
-		if (minute != that.minute) return false;
+		if (day != that.day)
+			return false;
+		if (hour != that.hour)
+			return false;
+		if (minute != that.minute)
+			return false;
 		return extraDate != null ? extraDate.equals(that.extraDate) : that.extraDate == null;
 	}
 
@@ -52,7 +57,7 @@ public class PositionDate {
 	 * @throws IllegalArgumentException if not valid day/hour/minute
 	 */
 	public PositionDate(int day, int hour, int minute) throws InmarsatException {
-		this(day,hour, minute,null);
+		this(day, hour, minute, null);
 	}
 
 
@@ -326,16 +331,23 @@ public class PositionDate {
 
 		@Override
 		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
 
 			PositionDateExtra that = (PositionDateExtra) o;
 
-			if (dateFormat != that.dateFormat) return false;
-			if (year != that.year) return false;
-			if (month != that.month) return false;
-			if (day != that.day) return false;
-			if (hour != that.hour) return false;
+			if (dateFormat != that.dateFormat)
+				return false;
+			if (year != that.year)
+				return false;
+			if (month != that.month)
+				return false;
+			if (day != that.day)
+				return false;
+			if (hour != that.hour)
+				return false;
 			return minute == that.minute;
 		}
 
