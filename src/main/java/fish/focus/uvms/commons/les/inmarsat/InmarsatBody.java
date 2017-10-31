@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class InmarsatBody {
-	private static final Logger LOGGER = LoggerFactory.getLogger(InmarsatBody.class);
 	protected byte[] body = null;
 
 	public String getBodyAsHexString() {
