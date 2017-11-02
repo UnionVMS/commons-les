@@ -1,9 +1,9 @@
 package fish.focus.uvms.commons.les.inmarsat.header;
 
+import fish.focus.uvms.commons.les.inmarsat.InmarsatDefinition;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 public class HeaderDataBuilder {
 	private HeaderType type;
@@ -57,7 +57,7 @@ public class HeaderDataBuilder {
 	public HeaderDataBuilder setStoredTime(String storedTime) throws ParseException {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		sdf.setTimeZone(InmarsatDefinition.API_TIMEZONE);
 		return setStoredTime(sdf.parse(storedTime));
 	}
 

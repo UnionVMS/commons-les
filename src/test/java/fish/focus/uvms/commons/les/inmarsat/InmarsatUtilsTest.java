@@ -96,8 +96,6 @@ public class InmarsatUtilsTest {
 		assertEquals((long) pow(2, 32) - 1,
 				InmarsatUtils.toUnsignedInt(new byte[] {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF}));
 		assertEquals(527241, InmarsatUtils.toUnsignedInt(new byte[] {(byte) 0x89, 0x0B, 0x08, 0x0}));
-
-
 	}
 
 	@Test
@@ -115,6 +113,7 @@ public class InmarsatUtilsTest {
 		assertEquals(127, InmarsatUtils.byteToUnsignedInt((byte) -129));
 		assertEquals(0, InmarsatUtils.byteToUnsignedInt((byte) -256));
 		assertEquals(255, InmarsatUtils.byteToUnsignedInt((byte) -257));
+
 
 	}
 

@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class InmarsatFileHandler {
 	public static final String ERROR_DIR_NAME = "error";
@@ -35,11 +33,11 @@ public class InmarsatFileHandler {
 	 * @return Map of file and messages parsed from the supplied directory
 	 * @throws IOException if the directory couldn't be read
 	 */
-	public ConcurrentMap<Path, InmarsatMessage[]> createMessages() throws IOException {
+	public Map<Path, InmarsatMessage[]> createMessages() throws IOException {
 		String pattern = new String(HEADER_PATTERN);
 		List<Path> fileNames = listFiles(downloadDir);
 
-		ConcurrentHashMap<Path, InmarsatMessage[]> output = new ConcurrentHashMap<>();
+		Map<Path, InmarsatMessage[]> output = new HashMap<>();
 
 		if (fileNames != null) {
 
@@ -145,13 +143,18 @@ public class InmarsatFileHandler {
 	 * Header sent doesn't always adhere to the byte contract..
 	 * This method tries to insert fix the missing parts..
 	 *
-	 * @param contents bytes that might contain miss some bytes
+	 * @param input bytes that might contain miss some bytes
 	 * @return message with fixed bytes
 	 */
-	public byte[] insertMissingData(byte[] contents) {
-		byte[] output = insertMissingMsgRefNo(contents);
+	public byte[] insertMissingData(byte[] input) {
+		byte[] output = insertMissingMsgRefNo(input);
 		output = insertMissingStoredTime(output);
 		output = insertMissingMemberNo(output);
+
+		if (LOGGER.isDebugEnabled() && (input.length < output.length)) {
+			LOGGER.debug("Message fixed: {} -> {}", InmarsatUtils.bytesArrayToHexString(input),
+					InmarsatUtils.bytesArrayToHexString(output));
+		}
 		return output;
 
 	}

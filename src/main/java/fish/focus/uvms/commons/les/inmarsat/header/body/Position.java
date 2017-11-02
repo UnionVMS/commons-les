@@ -38,5 +38,10 @@ public class Position {
 		}
 		return d;
 	}
+
+	@Override
+	public String toString() {
+		return getAsDouble().toString();
+	}
 }
 

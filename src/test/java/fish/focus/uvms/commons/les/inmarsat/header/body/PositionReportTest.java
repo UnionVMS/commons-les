@@ -219,7 +219,7 @@ public class PositionReportTest {
 	public void toStringTest() {
 		String out = positionReport.toString();
 		assertNotNull(out);
-		assertTrue(out.contains("; Speed:" + positionReportData.getSpeed()));
+		assertTrue(out.contains(";speed=" + positionReportData.getSpeed()));
 	}
 
 

@@ -5,6 +5,7 @@ import fish.focus.uvms.commons.les.inmarsat.header.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import static fish.focus.uvms.commons.les.inmarsat.InmarsatDefinition.*;
 
@@ -290,7 +291,7 @@ public class InmarsatHeader {
 		Integer position = getType(header).getHeaderStruct().getPositionStoredTime();
 		return new Date(
 				InmarsatUtils.toUnsignedInt(header, position, position + HeaderByte.STORED_TIME.getNoOfBytes() - 1)
-						* 1000);
+						* 1000L);
 	}
 
 
@@ -327,6 +328,17 @@ public class InmarsatHeader {
 		return API_EOH;
 	}
 
+	@Override
+	public String toString() {
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		sdf.setTimeZone(InmarsatDefinition.API_TIMEZONE);
+		return "Header=" + getHeaderAsHexString() + ";type=" + getType() + ";headerLength=" + getHeaderLength()
+				+ ";msgRefNo=" + getRefNo() + ";presentation=" + getDataPresentation() + ";failureReason="
+				+ getFailureReason() + ";deliveryAttempts=" + getDeliveryAttempts() + ";satIdAndLesId="
+				+ getSatIdAndLesId() + ";dataLength=" + getDataLength() + ";storedTime=" + sdf.format(getStoredTime())
+				+ ";dnid=" + getDnid() + ";memberNo=" + getMemberNo() + ";mesMobNo=" + getMesMobNo();
+
+	}
 }
 

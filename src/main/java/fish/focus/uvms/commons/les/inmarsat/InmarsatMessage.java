@@ -75,4 +75,9 @@ public class InmarsatMessage {
 	public boolean validate() {
 		return header.validate() && body.validate();
 	}
+
+	@Override
+	public String toString() {
+		return "InmarsatMessage-" + header + ";" + body;
+	}
 }

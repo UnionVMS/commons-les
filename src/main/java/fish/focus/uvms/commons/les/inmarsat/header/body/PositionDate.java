@@ -4,6 +4,7 @@ import fish.focus.uvms.commons.les.inmarsat.InmarsatDefinition;
 import fish.focus.uvms.commons.les.inmarsat.InmarsatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -198,6 +199,14 @@ public class PositionDate {
 		return extraDate;
 	}
 
+	@Override
+	public String toString() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		sdf.setTimeZone(InmarsatDefinition.API_TIMEZONE);
+		return "PositionDate-day=" + day + ";hour=" + hour + ";minute=" + minute + ";extraDate="
+				+ (extraDate != null ? extraDate : "") + sdf.format(getDate());
+	}
+
 	/**
 	 * Extra date info
 	 * <h2>Date Format 1</h2>
@@ -231,12 +240,12 @@ public class PositionDate {
 	static class PositionDateExtra {
 		public static final int FORMAT1_YEARSTART = 1997;
 		public static final int FORMAT2_YEARSTART = 1998;
-		private int dateFormat;//(1-3)
-		private int year;
-		private int month;
+		private final int dateFormat;//(1-3)
+		private final int year;
+		private final int month;
 		private int day;
-		private int hour;
-		private int minute;
+		private final int hour;
+		private final int minute;
 
 		/**
 		 * Create extradate in dateformat 1
@@ -251,6 +260,8 @@ public class PositionDate {
 			this.hour = 0;
 			this.minute = 0;
 		}
+
+
 
 		/**
 		 * Create extradate in dateformat 1, 2 or 3
@@ -364,6 +375,12 @@ public class PositionDate {
 			result = 31 * result + hour;
 			result = 31 * result + minute;
 			return result;
+		}
+
+		@Override
+		public String toString() {
+			return "PositionDateExtra-dateFormat=" + dateFormat + ";year=" + year + ";month=" + month + ";day=" + day
+					+ ";hour=" + hour + ";minute=" + minute;
 		}
 	}
 }

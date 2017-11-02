@@ -10,7 +10,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.TimeZone;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -85,9 +84,8 @@ public class HeaderDnidMsgTest {
 
 	@Test
 	public void getStoredTime() throws ParseException {
-
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		sdf.setTimeZone(InmarsatDefinition.API_TIMEZONE);
 		assertEquals(sdf.parse(storedTime), headerDnidMsg.getStoredTime());
 	}
 

@@ -4,6 +4,8 @@ import fish.focus.uvms.commons.les.inmarsat.header.HeaderStruct;
 import fish.focus.uvms.commons.les.inmarsat.header.HeaderType;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -11,13 +13,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class InmarsatFileHandlerTest {
-	final String start = "444E494420313037343520310D0A52657472696576696E6720444E494420646174612E2E2E0A";
-	final String end = "0A3E20";
+	private static final Logger LOGGER = LoggerFactory.getLogger(InmarsatFileHandlerTest.class);
+	private final String start = "444E494420313037343520310D0A52657472696576696E6720444E494420646174612E2E2E0A";
+	private final String end = "0A3E20";
 	private final String headerDnid = "015426540116890b08000155140036372455c307e702".toUpperCase();
 	private final String headerDnidNoMemberNo = "015426540116890b08000155140036372455c30702".toUpperCase();
 	private final String headerDnidFFMemberNo = "015426540116890b08000155140036372455c307FF02".toUpperCase();
@@ -182,6 +184,25 @@ public class InmarsatFileHandlerTest {
 
 	}
 
+
+	@Test
+	public void createMessagesFromPathInfo() throws Exception {
+		Map<Path, InmarsatMessage[]> messagesFromPath = ifd.createMessages();
+		int index = 0, size = messagesFromPath.size();
+
+		for (Map.Entry<Path, InmarsatMessage[]> entry : messagesFromPath.entrySet()) {
+			index++;
+			LOGGER.info("File {}/{} {}", index, size, entry.getKey().getFileName());
+			int i = 0;
+			int length = entry.getValue().length;
+			for (InmarsatMessage message : entry.getValue()) {
+				i++;
+				LOGGER.info("Message {}/{} {}", i, length, message);
+			}
+		}
+	}
+
+
 	@Test
 	public void createMessagesFromPath() throws Exception {
 		String file1_msg1 = headerDnid + bodyPositionReportPart1 + bodyPositionReportPart2;
@@ -211,7 +232,7 @@ public class InmarsatFileHandlerTest {
 		Files.write(file3, InmarsatUtils.hexStringToByteArray(file3_msg2), StandardOpenOption.APPEND);
 		Files.write(file3, InmarsatUtils.hexStringToByteArray(file3_msg3), StandardOpenOption.APPEND);
 		Files.write(file3, InmarsatUtils.hexStringToByteArray(end), StandardOpenOption.APPEND);
-		ConcurrentMap<Path, InmarsatMessage[]> messagesFromPath = ifd.createMessages();
+		Map<Path, InmarsatMessage[]> messagesFromPath = ifd.createMessages();
 		assertEquals(3, messagesFromPath.size());
 		assertTrue(messagesFromPath.containsKey(file1));
 		assertTrue(messagesFromPath.containsKey(file2));

@@ -369,6 +369,7 @@ public class PositionReport extends InmarsatBody {
 
 	/**
 	 * Position date
+	 *
 	 * @return the position date
 	 * @throws InmarsatException @see {@link PositionDate#PositionDate(int, int, int, PositionDate.PositionDateExtra)}
 	 */
@@ -379,12 +380,16 @@ public class PositionReport extends InmarsatBody {
 
 	@Override
 	public String toString() {
-
-		return "Data report type:" + getDataReportFormat() + "; Latitude:" + getLatitudeDegrees() + " Deg, "
-				+ getLatitudeMinutes() + " Min, " + getLatitudeMinuteFractions() + " FractionOfMin "
-				+ getLatitudeHemisphere() + "; Longitude:" + getLongitudeDegrees() + " Deg, " + getLongitudeMinutes()
-				+ " Min, " + getLongitudeMinuteFractions() + " FractionOfMin " + getLongitudeHemisphere()
-				+ "; Mem type:" + getMacroEncodedMessage() + "; Day of month:" + getDayOfMonth() + "; Time:" + getHour()
-				+ ":" + getMinutes() + "; Speed:" + getSpeed() + "; Course:" + getCourse();
+		try {
+			return "Body=" + getBodyAsHexString() + ";type=" + getDataReportFormat() + ";latitude=" + getLatitude()
+					+ ";longitude=" + getLongitude() + ";memcode=" + getMacroEncodedMessage() + ";date="
+					+ getPositionDate() + ";speed=" + getSpeed() + ";course=" + getCourse();
+		} catch (InmarsatException e) {
+			LOGGER.warn("Not a valid date-{},{}", getBodyAsHexString(), e.getMessage());
+		}
+		return "Body=" + getBodyAsHexString() + ";type=" + getDataReportFormat() + ";latitude=" + getLatitude()
+				+ ";longitude=" + getLongitude() + ";memcode=" + getMacroEncodedMessage() + ";date=NOTVALID;speed="
+				+ getSpeed() + ";course=" + getCourse();
 	}
 }
+
