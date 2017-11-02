@@ -37,6 +37,7 @@ public final class InmarsatUtils {
 	 *
 	 * @param binaryString the string representing a byte (must be multiple of 8 bits)
 	 * @return an byte array
+	 * @throws InmarsatException if binary string isn't multiple of 8 bits
 	 */
 	public static byte[] binaryStringToByteArray(String binaryString) throws InmarsatException {
 		int splitSize = 8;

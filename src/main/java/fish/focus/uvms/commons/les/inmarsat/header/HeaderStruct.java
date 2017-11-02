@@ -3,30 +3,145 @@ package fish.focus.uvms.commons.les.inmarsat.header;
 import java.util.EnumMap;
 
 /**
- *
  * Header structure for the types
- <div>
- <table>
- <thead><tr><th>Field</th><th>DNID</th><th>DNID_MSG</th><th>MSG</th><th>PDN</th><th>NDN</th></tr></thead><tbody>
- <tr><td>START_OF_HEADER</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
- <tr><td>LEAD_TEXT</td><td>3</td><td>3</td><td>3</td><td>3</td><td>3</td></tr>
- <tr><td>HEADER_TYPE</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
- <tr><td>HEADER_LENGTH</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
- <tr><td>MSG_REF_NO</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td></tr>
- <tr><td>PRESENTATION</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
- <tr><td>FAILURE_REASON</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
- <tr><td>DELIVERY_ATTEMPTS</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
- <tr><td>LES_ID</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
- <tr><td>DATA_LENGTH</td><td>2</td><td>2</td><td>2</td><td>0</td><td>0</td></tr>
- <tr><td>STORED_TIME</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td></tr>
- <tr><td>DNID</td><td>2</td><td>2</td><td>0</td><td>0</td><td>0</td></tr>
- <tr><td>MEMBER_NO</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
- <tr><td>MES_MOB_NO</td><td>0</td><td>4</td><td>4</td><td>4</td><td>4</td></tr>
- <tr><td>END_OF_HEADER</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
- <tr><td>Sum</td><td>22</td><td>25</td><td>23</td><td>20</td><td>21</td></tr>
- </tbody></table>
- </div>
-
+ * <table border=1 summary="Header structure">
+ * <tr>
+ * <td>Field</td>
+ * <td>DNID</td>
+ * <td>DNID_MSG</td>
+ * <td>MSG</td>
+ * <td>PDN</td>
+ * <td>NDN</td>
+ * </tr>
+ * <tr>
+ * <td>START_OF_HEADER</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * </tr>
+ * <tr>
+ * <td>LEAD_TEXT</td>
+ * <td>3</td>
+ * <td>3</td>
+ * <td>3</td>
+ * <td>3</td>
+ * <td>3</td>
+ * </tr>
+ * <tr>
+ * <td>HEADER_TYPE</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * </tr>
+ * <tr>
+ * <td>HEADER_LENGTH</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * </tr>
+ * <tr>
+ * <td>MSG_REF_NO</td>
+ * <td>4</td>
+ * <td>4</td>
+ * <td>4</td>
+ * <td>4</td>
+ * <td>4</td>
+ * </tr>
+ * <tr>
+ * <td>PRESENTATION</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>0</td>
+ * <td>0</td>
+ * </tr>
+ * <tr>
+ * <td>FAILURE_REASON</td>
+ * <td>0</td>
+ * <td>0</td>
+ * <td>0</td>
+ * <td>0</td>
+ * <td>1</td>
+ * </tr>
+ * <tr>
+ * <td>DELIVERY_ATTEMPTS</td>
+ * <td>0</td>
+ * <td>0</td>
+ * <td>0</td>
+ * <td>1</td>
+ * <td>1</td>
+ * </tr>
+ * <tr>
+ * <td>LES_ID</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>0</td>
+ * <td>0</td>
+ * </tr>
+ * <tr>
+ * <td>DATA_LENGTH</td>
+ * <td>2</td>
+ * <td>2</td>
+ * <td>2</td>
+ * <td>0</td>
+ * <td>0</td>
+ * </tr>
+ * <tr>
+ * <td>STORED_TIME</td>
+ * <td>4</td>
+ * <td>4</td>
+ * <td>4</td>
+ * <td>4</td>
+ * <td>4</td>
+ * </tr>
+ * <tr>
+ * <td>DNID</td>
+ * <td>2</td>
+ * <td>2</td>
+ * <td>0</td>
+ * <td>0</td>
+ * <td>0</td>
+ * </tr>
+ * <tr>
+ * <td>MEMBER_NO</td>
+ * <td>1</td>
+ * <td>0</td>
+ * <td>0</td>
+ * <td>0</td>
+ * <td>0</td>
+ * </tr>
+ * <tr>
+ * <td>MES_MOB_NO</td>
+ * <td>0</td>
+ * <td>4</td>
+ * <td>4</td>
+ * <td>4</td>
+ * <td>4</td>
+ * </tr>
+ * <tr>
+ * <td>END_OF_HEADER</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * </tr>
+ * <tr>
+ * <td>Sum</td>
+ * <td>22</td>
+ * <td>25</td>
+ * <td>23</td>
+ * <td>20</td>
+ * <td>21</td>
+ * </tr>
+ * </table>
  */
 public class HeaderStruct {
 	public static final int POS_START_OF_HEADER_POS = 0;

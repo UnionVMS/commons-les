@@ -9,22 +9,24 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Position Report Packet Format
+ * <pre>
  * The position report format used for the Maritime or Land Mobile Transceivers is defined by Inmarsat.
  * Each position report can contain additional information such as detailed date
  * information or status of the I/O pins. The position reports have this general format.
  * Each element except the first can be disabled. Each element will follow directly after the previous,
- * even if some elements are disabled. If only the <speed and course> are enabled it will
- * follow directly after <position and date>.
- * In the position reports with MEM-code IO-Report (71) the <I/O status> will always be included.
- * In position reports with MEM-code Enter Zone (72) the <ZoneNo> will always be included.
- * In position reports with MEM-code Above Speed Limits (89) the <Speed and course> will always be included.
- * <p>
+ * even if some elements are disabled. If only the &lt;speed and course&amp;ramp are enabled it will
+ * follow directly after &lt;position and date&gt;.
+ * In the position reports with MEM-code IO-Report (71) the &lt;I/O status&gt; will always be included.
+ * In position reports with MEM-code Enter Zone (72) the &lt;ZoneNo&gt; will always be included.
+ * In position reports with MEM-code Above Speed Limits (89) the &lt;Speed and course&gt; will always be included.
+ *
  * The Standard Inmarsat Maritime Position Report includes:
  * Position   (Accuracy of 74 meters)
  * Type of Report  (Mem-Code)
  * Time Stamp   (Info of Day, Hour and Minute)
  * Speed   (Accuracy of 0.2 knots)
  * Course   (Accuracy of 1 degree)
+ * </pre>
  */
 public class PositionReport extends InmarsatBody {
 	public static final int DATA_PACKET_1_BYTES = 8;
@@ -55,7 +57,9 @@ public class PositionReport extends InmarsatBody {
 
 	/**
 	 * @param positionReportData for a position report
+	 * @param includePackage2 if package 2 is included
 	 * @return a PositionReport
+	 *
 	 * @throws InmarsatException if not a valid body
 	 */
 	public static PositionReport createPositionReport(PositionReportData positionReportData, boolean includePackage2)
