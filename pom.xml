@@ -11,12 +11,12 @@
 
     <groupId>fish.focus.uvms.commons</groupId>
     <artifactId>commons-les</artifactId>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
 
     <scm>
         <url>${scm.url}</url>
         <connection>${scm.connection}</connection>
-        <tag>commons-les-1.1</tag>
+        <tag>HEAD</tag>
     </scm>
     <properties>
         <focus-pom.java.version>1.7</focus-pom.java.version>
