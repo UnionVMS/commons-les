@@ -1,4 +1,4 @@
-package fish.focus.uvms.commons.les.inmarsat.header.body;
+package fish.focus.uvms.commons.les.inmarsat.body;
 
 import fish.focus.uvms.commons.les.inmarsat.InmarsatDefinition;
 import fish.focus.uvms.commons.les.inmarsat.InmarsatException;
@@ -152,7 +152,7 @@ public class PositionDateTest {
 		final int posMin = nowMin / 2;
 
 		final int extraYear = 2016 - PositionDate.PositionDateExtra.FORMAT1_YEARSTART; // 0-63
-		final int extraMonth = Calendar.FEBRUARY + 1; //1-12
+		final int extraMonth = Calendar.FEBRUARY + 1; // 1-12
 
 		Calendar now = createCalendarUTC(nowYear, nowMonth, nowDay, nowHour, nowMin);
 		PositionDate positionDate =
@@ -176,10 +176,10 @@ public class PositionDateTest {
 		final int posMin = nowMin / 2;
 
 		final int extraYear = 2016 - PositionDate.PositionDateExtra.FORMAT1_YEARSTART; // 0-63
-		final int extraMonth = Calendar.DECEMBER + 1; //1-12
-		final int extraDay = 28; //1-31
-		final int extraHour = 2; //0-23
-		final int extraMin = 3; //1-59
+		final int extraMonth = Calendar.DECEMBER + 1; // 1-12
+		final int extraDay = 28; // 1-31
+		final int extraHour = 2; // 0-23
+		final int extraMin = 3; // 1-59
 
 		Calendar now = createCalendarUTC(nowYear, nowMonth, nowDay, nowHour, nowMin);
 		PositionDate positionDate = new PositionDate(nowDay, posHour, posMin,
@@ -203,10 +203,10 @@ public class PositionDateTest {
 		final int posMin = nowMin / 2;
 
 		final int extraYear = 2016; // 0-63
-		final int extraMonth = Calendar.FEBRUARY + 1; //1-12
-		final int extraDay = 28; //1-31
-		final int extraHour = 2; //0-23
-		final int extraMin = 3; //1-59
+		final int extraMonth = Calendar.FEBRUARY + 1; // 1-12
+		final int extraDay = 28; // 1-31
+		final int extraHour = 2; // 0-23
+		final int extraMin = 3; // 1-59
 
 		Calendar now = createCalendarUTC(nowYear, nowMonth, nowDay, nowHour, nowMin);
 		PositionDate positionDate = new PositionDate(nowDay, posHour, posMin,
@@ -240,14 +240,14 @@ public class PositionDateTest {
 		assertNotEquals(positionDate1.hashCode(), positionDate3.hashCode());
 
 		positionDate3 = new PositionDate(23, 1, 2, new PositionDate.PositionDateExtra(
-				2015 - PositionDate.PositionDateExtra.FORMAT1_YEARSTART, Calendar.DECEMBER + 1));
+				2016 - PositionDate.PositionDateExtra.FORMAT1_YEARSTART, Calendar.DECEMBER + 1));
 
 		assertNotEquals(positionDate1, positionDate3);
 		assertNotEquals(positionDate3, positionDate1);
 		assertNotEquals(positionDate1.hashCode(), positionDate3.hashCode());
 
 		PositionDate positionDate4 = new PositionDate(23, 1, 2, new PositionDate.PositionDateExtra(
-				2015 - PositionDate.PositionDateExtra.FORMAT1_YEARSTART, Calendar.DECEMBER + 1));
+				2016 - PositionDate.PositionDateExtra.FORMAT1_YEARSTART, Calendar.DECEMBER + 1));
 		assertEquals(positionDate3, positionDate4);
 		assertEquals(positionDate4, positionDate3);
 		assertEquals(positionDate3.hashCode(), positionDate4.hashCode());

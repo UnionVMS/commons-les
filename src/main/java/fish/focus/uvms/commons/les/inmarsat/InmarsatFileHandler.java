@@ -79,9 +79,9 @@ public class InmarsatFileHandler {
 			return new InmarsatMessage[] {};
 		}
 		boolean errorInfile = false;
-		//Parse bytes for messages
+		// Parse bytes for messages
 		for (int i = 0; i < (bytes.length - PATTERN_LENGTH); i++) {
-			//Find message
+			// Find message
 			if (InmarsatHeader.isStartOfMessage(bytes, i)) {
 				InmarsatMessage message;
 				byte[] messageBytes = Arrays.copyOfRange(bytes, i, bytes.length);
@@ -107,7 +107,8 @@ public class InmarsatFileHandler {
 			moveFileToDir(file, errorDir);
 		}
 
-		return messages.toArray(new InmarsatMessage[0]); // "new InmarsatMessage[0]" is used  instead of "new Inmarsat[messages.size()]" to get better performance
+		return messages.toArray(new InmarsatMessage[0]); // "new InmarsatMessage[0]" is used instead of "new
+															// Inmarsat[messages.size()]" to get better performance
 	}
 
 
@@ -140,8 +141,7 @@ public class InmarsatFileHandler {
 	}
 
 	/**
-	 * Header sent doesn't always adhere to the byte contract..
-	 * This method tries to insert fix the missing parts..
+	 * Header sent doesn't always adhere to the byte contract.. This method tries to insert fix the missing parts..
 	 *
 	 * @param input bytes that might contain miss some bytes
 	 * @return message with fixed bytes
@@ -162,11 +162,11 @@ public class InmarsatFileHandler {
 	private byte[] insertMissingMsgRefNo(final byte[] contents) {
 		byte[] input = contents.clone();
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		//Missing last MsgRefNo- insert #00 in before presentation..
+		// Missing last MsgRefNo- insert #00 in before presentation..
 		boolean insert = false;
 		int insertPosition = 0;
 		for (int i = 0; i < input.length; i++) {
-			//Find SOH
+			// Find SOH
 			if (InmarsatHeader.isStartOfMessage(input, i)) {
 				byte[] header = Arrays.copyOfRange(input, i, input.length);
 				HeaderType headerType = InmarsatHeader.getType(header);
@@ -193,14 +193,14 @@ public class InmarsatFileHandler {
 	}
 
 	private byte[] insertMissingStoredTime(byte[] contents) {
-		//Missing Date byte (incorrect date..)? - insert #00 in date first position
+		// Missing Date byte (incorrect date..)? - insert #00 in date first position
 		byte[] input = contents.clone();
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		boolean insert = false;
 		int insertPosition = 0;
 
 		for (int i = 0; i < input.length; i++) {
-			//Find SOH
+			// Find SOH
 			if (InmarsatHeader.isStartOfMessage(input, i)) {
 				byte[] header = Arrays.copyOfRange(input, i, input.length);
 				HeaderType headerType = InmarsatHeader.getType(header);
@@ -226,19 +226,19 @@ public class InmarsatFileHandler {
 
 	private byte[] insertMissingMemberNo(byte[] contents) {
 
-		//Missing Member number - insert #FF before EOH
-		//continue from previous cleaned data
+		// Missing Member number - insert #FF before EOH
+		// continue from previous cleaned data
 		byte[] input = contents.clone();
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		boolean insert = false;
 		int insertPosition = 0;
 
 		for (int i = 0; i < input.length; i++) {
-			//Find SOH
+			// Find SOH
 			if (InmarsatHeader.isStartOfMessage(input, i)) {
 				int headerLength = input[i + HeaderStruct.POS_HEADER_LENGTH];
 				int expectedEOHPosition = i + headerLength - 1;
-				//Check if memberNo exits
+				// Check if memberNo exits
 				if ((expectedEOHPosition >= input.length)
 						|| ((input[expectedEOHPosition - 1] == (byte) InmarsatDefinition.API_EOH)
 								&& input[expectedEOHPosition] != (byte) InmarsatDefinition.API_EOH)) {
@@ -247,7 +247,7 @@ public class InmarsatFileHandler {
 				}
 
 			}
-			//Find EOH
+			// Find EOH
 			if (insert && (input[i] == (byte) InmarsatDefinition.API_EOH) && (insertPosition == i)) {
 				LOGGER.debug("Message is missing member no");
 				output.write((byte) 0xFF);

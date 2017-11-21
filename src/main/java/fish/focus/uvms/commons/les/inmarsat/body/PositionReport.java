@@ -1,4 +1,4 @@
-package fish.focus.uvms.commons.les.inmarsat.header.body;
+package fish.focus.uvms.commons.les.inmarsat.body;
 
 import fish.focus.uvms.commons.les.inmarsat.InmarsatBody;
 import fish.focus.uvms.commons.les.inmarsat.InmarsatConfig;
@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Position Report Packet Format
+ * 
  * <pre>
  * The position report format used for the Maritime or Land Mobile Transceivers is defined by Inmarsat.
  * Each position report can contain additional information such as detailed date
@@ -59,7 +60,6 @@ public class PositionReport extends InmarsatBody {
 	 * @param positionReportData for a position report
 	 * @param includePackage2 if package 2 is included
 	 * @return a PositionReport
-	 *
 	 * @throws InmarsatException if not a valid body
 	 */
 	public static PositionReport createPositionReport(PositionReportData positionReportData, boolean includePackage2)
@@ -87,8 +87,7 @@ public class PositionReport extends InmarsatBody {
 						PositionReportBits.MONTH_NOT_USED.getNoOfBytes())
 				+ InmarsatUtils.intToBinary(positionReportData.getDay(), PositionReportBits.DAY_OF_MONTH.getNoOfBytes())
 				+ InmarsatUtils.intToBinary(positionReportData.getHour(), PositionReportBits.HOUR.getNoOfBytes())
-				+ InmarsatUtils.intToBinary(positionReportData.getMinute() / 2,
-						PositionReportBits.MINUTES.getNoOfBytes());
+				+ InmarsatUtils.intToBinary(positionReportData.getMinute(), PositionReportBits.MINUTES.getNoOfBytes());
 		if (includePackage2) {
 			sb = sb + InmarsatUtils.intToBinary((int) (positionReportData.getSpeed() * 5),
 					PositionReportBits.SPEED.getNoOfBytes())
@@ -114,7 +113,7 @@ public class PositionReport extends InmarsatBody {
 			LOGGER.debug("Position report data length not valid: {}", body);
 			return false;
 		}
-		//validate body data
+		// validate body data
 		try {
 			getPositionDate();
 		} catch (InmarsatException ie) {
@@ -130,8 +129,7 @@ public class PositionReport extends InmarsatBody {
 	}
 
 	/**
-	 * North/South indication. Set to 0 for North or 1 for South.
-	 * 1 bit
+	 * North/South indication. Set to 0 for North or 1 for South. 1 bit
 	 *
 	 * @return North or South hemisphere
 	 */
@@ -214,9 +212,8 @@ public class PositionReport extends InmarsatBody {
 	}
 
 	/**
-	 * Macro Encoded Msg (MEM) (7 bits):
-	 * Message (MEM) number is a code that identifies the reason for sending the report (such as regular position reporting or
-	 * a report triggered by some specific event).
+	 * Macro Encoded Msg (MEM) (7 bits): Message (MEM) number is a code that identifies the reason for sending the
+	 * report (such as regular position reporting or a report triggered by some specific event).
 	 *
 	 * @return Message (MEM) number
 	 */
@@ -259,22 +256,20 @@ public class PositionReport extends InmarsatBody {
 	 * @return Value: 0 - 29 (Minute within the hour given in units of 2 minutes)
 	 */
 	public int getMinutes() {
-		return Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[7]).substring(3), 2) * 2;
+		return Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[7]).substring(3), 2);
 	}
 
-	/*################## SECOND PACKAGE ############################################
-	 * # For landmobile
-	 * The Landmobile Position includes as default two reserved bytes in the optional packet.
+	/*
+	 * ################## SECOND PACKAGE ############################################ # For landmobile The Landmobile
+	 * Position includes as default two reserved bytes in the optional packet.
 	 *
-	 * # For Maritime
-	 * The Maritime Position includes by default speed, course and
-	 * a reserved field in the 2 packet.
-	 * The formats of the speed and course fields are like this
-	 *##############################################################################*/
+	 * # For Maritime The Maritime Position includes by default speed, course and a reserved field in the 2 packet. The
+	 * formats of the speed and course fields are like this
+	 * ##############################################################################
+	 */
 
 	/**
-	 * Speed (8bit) (second package)
-	 * Speed is coded as a one byte unsigned binary number with a resolution of 0.2 knots.
+	 * Speed (8bit) (second package) Speed is coded as a one byte unsigned binary number with a resolution of 0.2 knots.
 	 * If no valid data is available at the MES, the field should be set to "FFH".
 	 *
 	 * @return speed
@@ -305,26 +300,28 @@ public class PositionReport extends InmarsatBody {
 	/**
 	 * Detailed date information
 	 *
-	 * @return {@link fish.focus.uvms.commons.les.inmarsat.header.body.PositionDate.PositionDateExtra} detailed date from extra package
+	 * @return {@link PositionDate.PositionDateExtra} detailed date from extra package
 	 */
-	public PositionDate.PositionDateExtra getPositionDateExtra() {
+	public PositionDate.PositionDateExtra getPositionDateExtra() throws InmarsatException {
 		if (body.length == DATA_PACKET_1_BYTES && !InmarsatConfig.getInstance().isExtraDataEnabled()) {
-			return null; //No extra date
+			return null; // No extra date
 		}
 
 		switch (InmarsatConfig.getInstance().getExtraDataFormat()) {
 			case 1:
-				//Date format 1
+				// Date format 1
 				int month = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(0, 4), 2);
 				int year = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(4)
 						.concat(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(0, 3)), 2);
 
-				if (PositionDate.PositionDateExtra.validFormat1(year, month)) {
+				try {
 					return new PositionDate.PositionDateExtra(year, month);
+				} catch (InmarsatException e) {
+					// Ignore handled by returning null
 				}
 				break;
 			case 2:
-				//Date format 2
+				// Date format 2
 				year = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(1), 2);
 				month = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(0, 4), 2);
 				int day = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(4)
@@ -333,12 +330,15 @@ public class PositionReport extends InmarsatBody {
 				int min = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[14]).substring(6)
 						.concat(InmarsatUtils.byteToZeroPaddedString(body[15]).substring(0, 4)), 2);
 
-				if (PositionDate.PositionDateExtra.validFormat2(year, month, day, hour, min)) {
+				try {
 					return new PositionDate.PositionDateExtra(2, year, month, day, hour, min);
+				} catch (InmarsatException e) {
+					// Ignore handled by returning null
 				}
+
 				break;
 			case 3:
-				//Date format 3
+				// Date format 3
 				year = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[12]).substring(1)
 						.concat(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(0, 5)), 2);
 				month = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[13]).substring(5)
@@ -349,7 +349,7 @@ public class PositionReport extends InmarsatBody {
 				min = Integer.parseInt(InmarsatUtils.byteToZeroPaddedString(body[15]).substring(3)
 						.concat(InmarsatUtils.byteToZeroPaddedString(body[16]).substring(0, 1)), 2);
 
-				if (PositionDate.PositionDateExtra.validFormat3(year, month, day, hour, min)) {
+				if (PositionDate.PositionDateExtra.validate(3, year, month, day, hour, min)) {
 					return new PositionDate.PositionDateExtra(3, year, month, day, hour, min);
 				}
 				break;

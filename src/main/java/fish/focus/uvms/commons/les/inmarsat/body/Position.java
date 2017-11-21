@@ -1,4 +1,4 @@
-package fish.focus.uvms.commons.les.inmarsat.header.body;
+package fish.focus.uvms.commons.les.inmarsat.body;
 
 public class Position {
 	private final int hemisphere;
@@ -34,7 +34,7 @@ public class Position {
 		Double d = (double) degree + (minAndMinFraction / 60);
 
 		if (hemisphere > 0) {
-			d *= -1.0; //West or South
+			d *= -1.0; // West or South
 		}
 		return d;
 	}

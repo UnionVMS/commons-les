@@ -1,4 +1,4 @@
-package fish.focus.uvms.commons.les.inmarsat.header.body;
+package fish.focus.uvms.commons.les.inmarsat.body;
 
 import fish.focus.uvms.commons.les.inmarsat.InmarsatException;
 import org.junit.Test;

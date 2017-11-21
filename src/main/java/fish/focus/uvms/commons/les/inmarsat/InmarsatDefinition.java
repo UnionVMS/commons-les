@@ -24,7 +24,7 @@ public final class InmarsatDefinition {
 	public static final int API_SOH = 1;
 	public static final int API_EOH = 2;
 	public static final String API_LEAD_TEXT = "T&T";
-	//API Reason code definitions
+	// API Reason code definitions
 	public static final int API_UNKNOWN_ERROR = 0x00;
 	public static final int API_MES_UNKNOWN = 0x01;
 	public static final int API_MES_LOGGED_OUT = 0x02;
