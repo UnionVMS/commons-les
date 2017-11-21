@@ -1,7 +1,7 @@
 package fish.focus.uvms.commons.les.inmarsat;
 
+import fish.focus.uvms.commons.les.inmarsat.body.*;
 import fish.focus.uvms.commons.les.inmarsat.header.*;
-import fish.focus.uvms.commons.les.inmarsat.header.body.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

@@ -1,4 +1,4 @@
-package fish.focus.uvms.commons.les.inmarsat.header.body;
+package fish.focus.uvms.commons.les.inmarsat.body;
 
 import fish.focus.uvms.commons.les.inmarsat.InmarsatConfig;
 import fish.focus.uvms.commons.les.inmarsat.InmarsatException;
@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -15,7 +17,7 @@ import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class PositionReportTest {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(PositionReportTest.class);
 
 	private final PositionReport positionReport;
 	private final byte[] body;
@@ -33,25 +35,34 @@ public class PositionReportTest {
 
 	@Parameterized.Parameters
 	public static Collection<Object[]> data() throws InmarsatException {
-		return Arrays
-				.asList(new Object[][] {
-						//@formatter:off
-                        {"4969384c89ef1e7c402f00006100000000000000", new PositionReportDataBuilder().setDataReportFormat(1)
+		return Arrays.asList(new Object[][] {
+				//@formatter:off
+                        {"4969384c89ef1e7c402f00007270000000000000", new PositionReportDataBuilder().setDataReportFormat(1)
                                 .setLatPosition(new Position(0, 37, 41, 28))
                                 .setLongPosition(new Position(0, 19, 8, 76))
-                                .setMem(111).setPositionDate(new PositionDate(7, 19, 56, new PositionDate.PositionDateExtra(2005 - PositionDate.PositionDateExtra.FORMAT1_YEARSTART, Calendar.JUNE+1)))
+                                .setMem(111).setPositionDate(new PositionDate(7, 19, 56/2, new PositionDate.PositionDateExtra(2016 - PositionDate.PositionDateExtra.FORMAT1_YEARSTART, Calendar.JULY+1)))
                                 .setSpeedAndCourse(new SpeedAndCourse(12.8, 94)).createPositionReportData()},
-                        {"01e1908b7469007a000000000763B14000000000", new PositionReportDataBuilder().setDataReportFormat(0)
+                        {"01e1908b7469007a000000001284C25000000000", new PositionReportDataBuilder().setDataReportFormat(0)
                                 .setLatPosition(new Position(0, 7, 33, 72))
                                 .setLongPosition(new Position(0, 34, 55, 32))
-                                .setMem(105).setPositionDate(new PositionDate(0, 3, 52,  new PositionDate.PositionDateExtra(2, 2005 - PositionDate.PositionDateExtra.FORMAT2_YEARSTART, Calendar.JUNE+1,7,12,20)))
+                                .setMem(105).setPositionDate(new PositionDate(0, 3, 52/2,  new PositionDate.PositionDateExtra(2, 2016 - PositionDate.PositionDateExtra.FORMAT2_YEARSTART, Calendar.AUGUST+1,9,16,37)))
                                 .setSpeedAndCourse(new SpeedAndCourse(0, 0)).createPositionReportData()},
-                        {"4def7831f48b1d8a38ba00003EAB1D8A00000000", new PositionReportDataBuilder().setDataReportFormat(1)
+                        {"4def7831f48b1d8a38ba00003F0B1D8A00000000", new PositionReportDataBuilder().setDataReportFormat(1)
                                 .setLatPosition(new Position(0, 55, 47, 60))
                                 .setLongPosition(new Position(0, 12, 31, 36))
-                                .setMem(11).setPositionDate(new PositionDate(7, 12, 20, new PositionDate.PositionDateExtra(3, 2005, Calendar.JUNE+1,7,12,20)))
-                                .setSpeedAndCourse(new SpeedAndCourse(11.2, 372)).createPositionReportData()}
-                        //@formatter:on
+                                .setMem(11).setPositionDate(new PositionDate(7, 12, 20/2, new PositionDate.PositionDateExtra(3, 2017, Calendar.JUNE+1,7,12,20)))
+                                .setSpeedAndCourse(new SpeedAndCourse(11.2, 372)).createPositionReportData()},
+						{"4E6AB82FA50B1D2B00A18000B500000000000000", new PositionReportDataBuilder().setDataReportFormat(1)
+                                .setLatPosition(new Position(0, 57, 42, 92))
+                                .setLongPosition(new Position(0, 11, 58, 40))
+                                .setMem(11).setPositionDate(new PositionDate(7, 9, 22/2))
+                                .setSpeedAndCourse(new SpeedAndCourse(0, 323)).createPositionReportData()},
+						{"4E6AB82FA50B1D1A00A18000B500000000000000", new PositionReportDataBuilder().setDataReportFormat(1)
+                                .setLatPosition(new Position(0, 57, 42, 92))
+                                .setLongPosition(new Position(0, 11, 58, 40))
+                                .setMem(11).setPositionDate(new PositionDate(7, 8, 52/2))
+                                .setSpeedAndCourse(new SpeedAndCourse(0, 323)).createPositionReportData()}
+                                //@formatter:on
 		});
 
 	}
@@ -70,7 +81,7 @@ public class PositionReportTest {
 	public void createBodyFromData() throws Exception {
 		String bodyFromDataHex = PositionReport.createPositionReport(positionReportData, true).getBodyAsHexString();
 		assertEquals("Body of position report should be same", bodyHex.toUpperCase().substring(0, 12 * 2),
-				bodyFromDataHex.substring(0, 12 * 2)); //ignore extradate
+				bodyFromDataHex.substring(0, 12 * 2)); // ignore extradate
 
 	}
 
@@ -197,7 +208,7 @@ public class PositionReportTest {
 
 	@Test
 	public void getPositionDateExtra() throws InmarsatException {
-		InmarsatConfig.getInstance().setExtraDataEnabled(true);
+		InmarsatConfig.getInstance().setExtraDataEnabled(false);
 		PositionDate.PositionDateExtra extraDate = null;
 		if (positionReportData.getPositionDate() != null) {
 			extraDate = positionReportData.getPositionDate().getExtraDate();
@@ -213,6 +224,7 @@ public class PositionReportTest {
 					positionDateExtra.getDate(positionReport.getPositionDate()).getTime());
 
 		}
+		LOGGER.debug("positionReport: {}", positionReport);
 	}
 
 	@Test

@@ -2,7 +2,7 @@ package fish.focus.uvms.commons.les.inmarsat;
 
 import fish.focus.uvms.commons.les.inmarsat.header.HeaderStruct;
 import fish.focus.uvms.commons.les.inmarsat.header.HeaderType;
-import fish.focus.uvms.commons.les.inmarsat.header.body.PositionReport;
+import fish.focus.uvms.commons.les.inmarsat.body.PositionReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ public class InmarsatMessage {
 	 * Create message
 	 *
 	 * @param header the header
-	 * @param body   the body
+	 * @param body the body
 	 * @throws InmarsatException if not valid header or body
 	 */
 	public InmarsatMessage(InmarsatHeader header, InmarsatBody body) throws InmarsatException {

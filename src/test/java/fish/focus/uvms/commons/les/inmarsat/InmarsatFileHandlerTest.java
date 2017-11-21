@@ -37,8 +37,8 @@ public class InmarsatFileHandlerTest {
 
 	@Before
 	public void setup() throws IOException {
-		//Clear downloaddir...
-		//noinspection ConstantConditions
+		// Clear downloaddir...
+		// noinspection ConstantConditions
 		if (deleteDownloadDir) {
 
 			Files.walkFileTree(downloadDir, new SimpleFileVisitor<Path>() {
@@ -56,12 +56,12 @@ public class InmarsatFileHandlerTest {
 			});
 		}
 
-		//Create 2 dummy dat files
+		// Create 2 dummy dat files
 		file1 = Paths.get(downloadDir.toString(), "dummyuvmsjunittest1.dat");
 		file2 = Paths.get(downloadDir.toString(), "/dummyuvmsjunittest2.dat");
 		file3 = Paths.get(downloadDir.toString(), "/dummyuvmsjunittest3.dat");
 		Path fileMoved = Paths.get(downloadDir.toString(), "error", "dummyuvmsjunittest1.dat");
-		//Just in case we delete them..
+		// Just in case we delete them..
 		if (Files.exists(file1)) {
 			Files.delete(file1);
 		}
@@ -138,7 +138,7 @@ public class InmarsatFileHandlerTest {
 
 	@Test
 	public void insertMissingMemberNo() throws Exception {
-		//Header with no member no
+		// Header with no member no
 		byte[] message = ifd.insertMissingData(InmarsatUtils.hexStringToByteArray(headerDnidNoMemberNo));
 		assertEquals((byte) 0xFF, message[20]);
 		assertEquals(HeaderType.DNID.getHeaderLength(), message.length);
@@ -148,7 +148,7 @@ public class InmarsatFileHandlerTest {
 
 	@Test
 	public void insertMissingMemberNoHasFF() throws Exception {
-		//Header with default FF
+		// Header with default FF
 		byte[] message = ifd.insertMissingData(InmarsatUtils.hexStringToByteArray(headerDnidFFMemberNo));
 		assertEquals((byte) 0xFF, message[20]);
 		assertEquals(HeaderType.DNID.getHeaderLength(), message.length);
@@ -157,7 +157,7 @@ public class InmarsatFileHandlerTest {
 
 	@Test
 	public void insertMissingMemberNoHasMemberNo() throws Exception {
-		//Header with member number but not FF
+		// Header with member number but not FF
 		byte[] message = ifd.insertMissingData(InmarsatUtils.hexStringToByteArray(headerDnid));
 		assertEquals(HeaderType.DNID.getHeaderLength(), message.length);
 		assertEquals(headerDnid, InmarsatUtils.bytesArrayToHexString(message));
@@ -165,7 +165,7 @@ public class InmarsatFileHandlerTest {
 
 	@Test
 	public void insertMissingMemberNoManyHeaderWithWithout() throws Exception {
-		//Headers with/without member number
+		// Headers with/without member number
 		String inputMes = headerDnid + headerDnidFFMemberNo + headerDnidNoMemberNo + headerDnidFFMemberNo + headerDnid
 				+ headerDnidNoMemberNo;
 		String expected = headerDnid + headerDnidFFMemberNo + headerDnidFFMemberNo + headerDnidFFMemberNo + headerDnid
@@ -177,7 +177,7 @@ public class InmarsatFileHandlerTest {
 
 	@Test
 	public void insertMissingMemberNoWithMemberNoAndEOFInMessage() throws Exception {
-		//Headers with/without member number
+		// Headers with/without member number
 		String inputMes = "01542654011634630E0002440800511AA959F9290C02808A160000010000";
 		byte[] message = ifd.insertMissingData(InmarsatUtils.hexStringToByteArray(inputMes));
 		assertEquals(inputMes, InmarsatUtils.bytesArrayToHexString(message));
@@ -207,13 +207,13 @@ public class InmarsatFileHandlerTest {
 	public void createMessagesFromPath() throws Exception {
 		String file1_msg1 = headerDnid + bodyPositionReportPart1 + bodyPositionReportPart2;
 		String file2_msg1 = "01542654011634630E0002440800511AA959F9290C02808A160000010000";
-		String file2_msg2 = "015426540116EF630800024408005A1AA959F92902808A170000010000"; //missing member no!
-		String file2_msg2FF = "015426540116EF630800024408005A1AA959F929FF02808A170000010000"; //member no FF
+		String file2_msg2 = "015426540116EF630800024408005A1AA959F92902808A170000010000"; // missing member no!
+		String file2_msg2FF = "015426540116EF630800024408005A1AA959F929FF02808A170000010000"; // member no FF
 		String file2_msg3 = "015426540116EF630800024408005A1AA959F9290B02808A170000010000";
 
-		String file3_msg1 = "01542654011734630E0002440800511AA959F9290C02808A160000010000"; //Not valid
-		String file3_msg2 = "015426540116EF630800024408005A1AA959F92902808A170000010000"; //missing member no!
-		String file3_msg2FF = "015426540116EF630800024408005A1AA959F929FF02808A170000010000"; //member no FF
+		String file3_msg1 = "01542654011734630E0002440800511AA959F9290C02808A160000010000"; // Not valid
+		String file3_msg2 = "015426540116EF630800024408005A1AA959F92902808A170000010000"; // missing member no!
+		String file3_msg2FF = "015426540116EF630800024408005A1AA959F929FF02808A170000010000"; // member no FF
 		String file3_msg3 = "015426540116EF630800024408005A1AA959F9290B02808A170000010000";
 
 
@@ -250,7 +250,7 @@ public class InmarsatFileHandlerTest {
 				found++;
 			}
 			if (entry.getKey().equals(file3)) {
-				//file3_msg1 not valid and should not be parsed----
+				// file3_msg1 not valid and should not be parsed----
 				assertEquals(file3_msg2FF, entry.getValue()[0].getMessageAsHexString());
 				assertEquals(file3_msg3, entry.getValue()[1].getMessageAsHexString());
 				found++;

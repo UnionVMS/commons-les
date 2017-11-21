@@ -1,4 +1,4 @@
-package fish.focus.uvms.commons.les.inmarsat.header.body;
+package fish.focus.uvms.commons.les.inmarsat.body;
 
 import fish.focus.uvms.commons.les.inmarsat.InmarsatDefinition;
 import fish.focus.uvms.commons.les.inmarsat.InmarsatException;
@@ -9,9 +9,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Position date in the following format:
- * Day (5 bits): Value: 0 - 31 (Day of the month)
- * Hour (5 bits): Value: 0 - 23 (Hour of the day)
+ * Position date in the following format:<br/>
+ * Day (5 bits): Value: 0 - 31 (Day of the month)<br/>
+ * Hour (5 bits): Value: 0 - 23 (Hour of the day)<br/>
  * Minutes(5 bits): Value 0 - 29 (Minute within the hour given in units of 2 minutes)
  **/
 public class PositionDate {
@@ -20,13 +20,13 @@ public class PositionDate {
 	private final int day;
 	private final int hour;
 	private final int minute;
-	private final PositionDateExtra extraDate;//optional
+	private final PositionDateExtra extraDate;// optional
 
 	/**
 	 * Create a position date (without extradate)
 	 *
-	 * @param day    Value: 0 - 31 (Day of the month)
-	 * @param hour   Value: 0 - 23 (Hour of the day)
+	 * @param day Value: 0 - 31 (Day of the month)
+	 * @param hour Value: 0 - 23 (Hour of the day)
 	 * @param minute Value 0 - 29 (Minute within the hour given in units of 2 minutes)
 	 * @throws InmarsatException if not valid day/hour/minute
 	 */
@@ -37,9 +37,9 @@ public class PositionDate {
 	/**
 	 * Create a position date with optional extradate
 	 *
-	 * @param day       Value: 0 - 31 (Day of the month)
-	 * @param hour      Value: 0 - 23 (Hour of the day)
-	 * @param minute    Value 0 - 29 (Minute within the hour given in units of 2 minutes)
+	 * @param day Value: 0 - 31 (Day of the month)
+	 * @param hour Value: 0 - 23 (Hour of the day)
+	 * @param minute Value 0 - 29 (Minute within the hour given in units of 2 minutes)
 	 * @param extraDate optional extradate
 	 * @throws InmarsatException if not valid date
 	 */
@@ -70,7 +70,7 @@ public class PositionDate {
 			return false;
 		if (hour != that.hour)
 			return false;
-		//noinspection SimplifiableIfStatement
+		// noinspection SimplifiableIfStatement
 		if (minute != that.minute)
 			return false;
 		return extraDate != null ? extraDate.equals(that.extraDate) : that.extraDate == null;
@@ -170,16 +170,16 @@ public class PositionDate {
 		final int posRealMin = getRealMinute();
 
 		if (posDay > nowDay || ((posHour * 100 + posRealMin) > (nowHour * 100 + nowMin))) {
-			//not in current month ("posdate>nowdate")
+			// not in current month ("posdate>nowdate")
 			if (posMonth == Calendar.JANUARY) {
 				posYear--;
 			} else {
 				posMonth--;
 				Calendar dummy = (Calendar) dateTime.clone();
-				//noinspection MagicConstant
+				// noinspection MagicConstant
 				dummy.set(posDay, posMonth, 1);
 				if (dummy.getActualMaximum(Calendar.DAY_OF_MONTH) < posDay) {
-					//Two month old or previous year
+					// Two month old or previous year
 					if (posMonth == 0) {
 						posYear--;
 					} else {
@@ -189,7 +189,7 @@ public class PositionDate {
 			}
 		}
 
-		//noinspection MagicConstant
+		// noinspection MagicConstant
 		dateTime.set(posYear, posMonth, posDay, posHour, posRealMin);
 		return dateTime.getTime();
 
@@ -204,7 +204,7 @@ public class PositionDate {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		sdf.setTimeZone(InmarsatDefinition.API_TIMEZONE);
 		return "PositionDate-day=" + day + ";hour=" + hour + ";minute=" + minute + ";extraDate="
-				+ (extraDate != null ? extraDate : "") + sdf.format(getDate());
+				+ (extraDate != null ? extraDate : "") + ";date:" + sdf.format(getDate());
 	}
 
 	/**
@@ -213,52 +213,62 @@ public class PositionDate {
 	 * <p>
 	 * Uses two extra bytes in the position report.<br/>
 	 * Adds additional information about year and month.<br/>
-	 * Month uses 4 bits and the range is 1 – 12  (January to December)<br/>
-	 * Year uses 6 bits and range is 0 – 63 calculated from year 1997 (1997 – 2060)</p>
+	 * Month uses 4 bits and the range is 1 – 12 (January to December)<br/>
+	 * Year uses 6 bits and range is 0 – 63 calculated from year 1997 (1997 – 2060)
+	 * </p>
 	 * <hr/>
 	 * <h2>Date Format 2</h2>
-	 * <p>Uses four extra bytes in the position report.<br/>
+	 * <p>
+	 * Uses four extra bytes in the position report.<br/>
 	 * Adds additional information about year, month, day, hour and minutes.<br/>
 	 * Year uses 7 bits and the range is 0 - 99 calculated from year 1998 (1998 - 2097)<br/>
 	 * Month uses 4 bits and range is 1 – 12 (January – December)<br/>
 	 * Day uses 5 bits and range is 1 – 31<br/>
 	 * Hour uses 5 bits and range is 0 – 23<br/>
-	 * Minute uses 6 bits and range is 0 – 59 </p>
+	 * Minute uses 6 bits and range is 0 – 59
+	 * </p>
 	 * <hr/>
 	 * <p>
 	 * <hr/>
 	 * <h2>Date Format 3</h2>
-	 * <p>Uses five bytes up in the position report.<br/>
+	 * <p>
+	 * Uses five bytes up in the position report.<br/>
 	 * Adds additional information about year, month, day, hour and minutes.<br/>
 	 * Year uses 12 bits and the range is 0 – 4095<br/>
 	 * Month uses 4 bits and range is 1 – 12 (January – December) <br/>
 	 * Day uses 5 bits and range is 1 – 31<br/>
 	 * Hour uses 5 bits and range is 0 – 23<br/>
-	 * Minutes uses 6 bits and range is 0 – 59</p>
+	 * Minutes uses 6 bits and range is 0 – 59
+	 * </p>
 	 * <hr/>
 	 **/
 	static class PositionDateExtra {
 		public static final int FORMAT1_YEARSTART = 1997;
 		public static final int FORMAT2_YEARSTART = 1998;
-		private final int dateFormat;//(1-3)
+		public static final int START_YEAR = 2015;
+		private final int dateFormat;// (1-3)
 		private final int year;
 		private final int month;
-		private int day;
 		private final int hour;
 		private final int minute;
+		private int day;
 
 		/**
 		 * Create extradate in dateformat 1
 		 *
-		 * @param year  0 – 63 calculated from year 1997 (1997 – 2060)
-		 * @param month 1 – 12  (January to December)
+		 * @param year 0 – 63 calculated from year 1997 (1997 – 2060)
+		 * @param month 1 – 12 (January to December)
 		 */
-		public PositionDateExtra(int year, int month) {
+		public PositionDateExtra(int year, int month) throws InmarsatException {
 			this.dateFormat = 1;
 			this.year = year;
 			this.month = month;
 			this.hour = 0;
 			this.minute = 0;
+			if (!validate(1, year, month)) {
+				LOGGER.error("Not a vaild extradate, year:{}, month:{}", year, month);
+				throw new InmarsatException("Not a vaild exradate");
+			}
 		}
 
 
@@ -267,19 +277,25 @@ public class PositionDate {
 		 * Create extradate in dateformat 1, 2 or 3
 		 *
 		 * @param dateFormat 1,2 or 3
-		 * @param year       0 – 63 (1997 – 2060) for format1, 0-99 (1998 - 2097) for format2, 0 – 4095 for firm
-		 * @param month      1 – 12 (January – December) (format 2 & 3)
-		 * @param day        1 – 31 (format 2 & 3)
-		 * @param hour       0 – 23  (format 2 & 3)
-		 * @param min        0 – 59  (format 2 & 3)
+		 * @param year 0 – 63 (1997 – 2060) for format1, 0-99 (1998 - 2097) for format2, 0 – 4095 for firm
+		 * @param month 1 – 12 (January – December) (format 2 & 3)
+		 * @param day 1 – 31 (format 2 & 3)
+		 * @param hour 0 – 23 (format 2 & 3)
+		 * @param min 0 – 59 (format 2 & 3)
 		 */
-		public PositionDateExtra(int dateFormat, int year, int month, int day, int hour, int min) {
+		public PositionDateExtra(int dateFormat, int year, int month, int day, int hour, int min)
+				throws InmarsatException {
 			this.dateFormat = dateFormat;
 			this.year = year;
 			this.month = month;
 			this.day = day;
 			this.hour = hour;
 			this.minute = min;
+			if (!validate(dateFormat, year, month, day, hour, min)) {
+				LOGGER.error("Not a vaild exradate, year:{}, month:{}, day:{}, hour:{}, min:{}", year, month, day, hour,
+						min);
+				throw new InmarsatException("Not a vaild exradate");
+			}
 		}
 
 		public static boolean validMonth(int month) {
@@ -290,16 +306,41 @@ public class PositionDate {
 			return ((1 <= day) && (day <= 31)) && ((0 <= hour) && (hour <= 23)) && ((0 <= minute) && (minute <= 59));
 		}
 
-		public static boolean validFormat1(int year, int month) {
-			return ((0 <= year) && (year <= 63)) && validMonth(month);
+		public static int getRealYear(int dateFormat, int year) {
+			switch (dateFormat) {
+				case 1:
+					return year + FORMAT1_YEARSTART;
+				case 2:
+					return year + FORMAT2_YEARSTART;
+				default:
+					return year;
+			}
 		}
 
-		public static boolean validFormat2(int year, int month, int day, int hour, int minute) {
-			return ((0 <= year) && (year <= 99)) && validMonth(month) && validDayHourMinute(day, hour, minute);
+		/**
+		 * Year should be after 2015 and not after current year.
+		 *
+		 * @param dateFormat 1,2,3
+		 * @param year the year in the format according to the specified dateformat
+		 * @return validated year ( nowyear-2<=extrayear<=nowyear)
+		 */
+		public static boolean validateYear(int dateFormat, int year) {
+			Calendar now = Calendar.getInstance(InmarsatDefinition.API_TIMEZONE);
+			int nowYear = now.get(Calendar.YEAR);
+			int extraDateRealYear = getRealYear(dateFormat, year);
+			return (START_YEAR < extraDateRealYear) && (extraDateRealYear <= nowYear);
 		}
 
-		public static boolean validFormat3(int year, int month, int day, int hour, int minute) {
-			return ((0 <= year) && (year <= 4095)) && validMonth(month) && validDayHourMinute(day, hour, minute);
+		public static boolean validate(int dateFormat, int year, int month) {
+			return validate(dateFormat, year, month, 1, 0, 0);
+		}
+
+		public static boolean validate(int dateFormat, int year, int month, int day, int hour, int minute) {
+			return validateYear(dateFormat, year) && validMonth(month) && validDayHourMinute(day, hour, minute);
+		}
+
+		public int getRealYear() {
+			return getRealYear(dateFormat, year);
 		}
 
 		public int getDateFormat() {
@@ -309,36 +350,22 @@ public class PositionDate {
 		public boolean validate() {
 			switch (dateFormat) {
 				case 1:
-					return validFormat1(year, month);
+					return validate(1, year, month);
 				case 2:
-					return validFormat2(year, month, day, hour, minute);
 				case 3:
-					return validFormat3(year, month, day, hour, minute);
+					return validate(dateFormat, year, month, day, hour, minute);
 				default:
 					return false;
 			}
-
 		}
 
-		@SuppressWarnings("MagicConstant")
+
 		public Date getDate(PositionDate baseDate) {
 			Calendar dateTime = Calendar.getInstance();
 			dateTime.clear();
 			dateTime.setTimeZone(InmarsatDefinition.API_TIMEZONE);
-			if (dateFormat == 1) {
-				//Extra: Year, month
-				dateTime.set(FORMAT1_YEARSTART + year, month - 1, baseDate.getDay(), baseDate.getHour(),
-						baseDate.getRealMinute());
+			dateTime.set(getRealYear(), month - 1, baseDate.getDay(), baseDate.getHour(), baseDate.getRealMinute());
 
-			} else if (dateFormat == 2) {
-				//Extra: Year, month
-				dateTime.set(FORMAT2_YEARSTART + year, month - 1, baseDate.getDay(), baseDate.getHour(),
-						baseDate.getRealMinute());
-
-			} else if (dateFormat == 3) {
-				dateTime.set(year, month - 1, baseDate.getDay(), baseDate.getHour(), baseDate.getRealMinute());
-
-			}
 			return dateTime.getTime();
 		}
 
@@ -360,7 +387,7 @@ public class PositionDate {
 				return false;
 			if (day != that.day)
 				return false;
-			//noinspection SimplifiableIfStatement
+			// noinspection SimplifiableIfStatement
 			if (hour != that.hour)
 				return false;
 			return minute == that.minute;

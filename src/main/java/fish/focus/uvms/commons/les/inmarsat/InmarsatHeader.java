@@ -148,7 +148,7 @@ public class InmarsatHeader {
 	private static boolean isValidHeaderLength(byte[] headerToValidate) {
 		if (headerToValidate != null) {
 			HeaderType type = HeaderType.fromInt(headerToValidate[HeaderStruct.POS_TYPE]);
-			if (type != null && (HeaderStruct.POS_REF_NO_END + 1) < headerToValidate.length //MIN LENGTH
+			if (type != null && (HeaderStruct.POS_REF_NO_END + 1) < headerToValidate.length // MIN LENGTH
 					&& headerToValidate[HeaderStruct.POS_HEADER_LENGTH] == headerToValidate.length
 					&& type.getHeaderLength() == headerToValidate.length) {
 				return true;
