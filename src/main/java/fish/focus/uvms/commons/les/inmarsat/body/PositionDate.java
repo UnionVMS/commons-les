@@ -9,9 +9,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Position date in the following format:<br/>
- * Day (5 bits): Value: 0 - 31 (Day of the month)<br/>
- * Hour (5 bits): Value: 0 - 23 (Hour of the day)<br/>
+ * Position date in the following format:<br>
+ * Day (5 bits): Value: 0 - 31 (Day of the month)<br>
+ * Hour (5 bits): Value: 0 - 23 (Hour of the day)<br>
  * Minutes(5 bits): Value 0 - 29 (Minute within the hour given in units of 2 minutes)
  **/
 public class PositionDate {
@@ -211,20 +211,20 @@ public class PositionDate {
 	 * Extra date info
 	 * <h2>Date Format 1</h2>
 	 * <p>
-	 * Uses two extra bytes in the position report.<br/>
-	 * Adds additional information about year and month.<br/>
-	 * Month uses 4 bits and the range is 1 – 12 (January to December)<br/>
+	 * Uses two extra bytes in the position report.<br>
+	 * Adds additional information about year and month.<br>
+	 * Month uses 4 bits and the range is 1 – 12 (January to December)<br>
 	 * Year uses 6 bits and range is 0 – 63 calculated from year 1997 (1997 – 2060)
 	 * </p>
 	 * <hr/>
 	 * <h2>Date Format 2</h2>
 	 * <p>
-	 * Uses four extra bytes in the position report.<br/>
-	 * Adds additional information about year, month, day, hour and minutes.<br/>
-	 * Year uses 7 bits and the range is 0 - 99 calculated from year 1998 (1998 - 2097)<br/>
-	 * Month uses 4 bits and range is 1 – 12 (January – December)<br/>
-	 * Day uses 5 bits and range is 1 – 31<br/>
-	 * Hour uses 5 bits and range is 0 – 23<br/>
+	 * Uses four extra bytes in the position report.<br>
+	 * Adds additional information about year, month, day, hour and minutes.<br>
+	 * Year uses 7 bits and the range is 0 - 99 calculated from year 1998 (1998 - 2097)<br>
+	 * Month uses 4 bits and range is 1 – 12 (January – December)<br>
+	 * Day uses 5 bits and range is 1 – 31<br>
+	 * Hour uses 5 bits and range is 0 – 23<br>
 	 * Minute uses 6 bits and range is 0 – 59
 	 * </p>
 	 * <hr/>
@@ -232,12 +232,12 @@ public class PositionDate {
 	 * <hr/>
 	 * <h2>Date Format 3</h2>
 	 * <p>
-	 * Uses five bytes up in the position report.<br/>
-	 * Adds additional information about year, month, day, hour and minutes.<br/>
-	 * Year uses 12 bits and the range is 0 – 4095<br/>
-	 * Month uses 4 bits and range is 1 – 12 (January – December) <br/>
-	 * Day uses 5 bits and range is 1 – 31<br/>
-	 * Hour uses 5 bits and range is 0 – 23<br/>
+	 * Uses five bytes up in the position report.<br>
+	 * Adds additional information about year, month, day, hour and minutes.<br>
+	 * Year uses 12 bits and the range is 0 – 4095<br>
+	 * Month uses 4 bits and range is 1 – 12 (January – December) <br>
+	 * Day uses 5 bits and range is 1 – 31<br>
+	 * Hour uses 5 bits and range is 0 – 23<br>
 	 * Minutes uses 6 bits and range is 0 – 59
 	 * </p>
 	 * <hr/>
