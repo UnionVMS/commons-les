@@ -157,19 +157,22 @@ public class PositionDate {
 		Calendar dateTime = Calendar.getInstance();
 		dateTime.clear();
 		dateTime.setTimeZone(InmarsatDefinition.API_TIMEZONE);
-		int nowYear = now.get(Calendar.YEAR);
-		int nowMonth = now.get(Calendar.MONTH);
-		int nowDay = now.get(Calendar.DAY_OF_MONTH);
-		int nowHour = now.get(Calendar.HOUR);
-		int nowMin = now.get(Calendar.MINUTE);
 
-		int posYear = nowYear;
-		int posMonth = nowMonth;
+		int posYear = now.get(Calendar.YEAR);
+		int posMonth = now.get(Calendar.MONTH);
 		final int posDay = getDay();
 		final int posHour = getHour();
 		final int posRealMin = getRealMinute();
+		Calendar posTime = Calendar.getInstance();
+		posTime.clear();
+		posTime.setTimeZone(InmarsatDefinition.API_TIMEZONE);
+		posTime.set(Calendar.YEAR, posYear);
+		posTime.set(Calendar.MONTH, posMonth);
+		posTime.set(Calendar.DAY_OF_MONTH, posDay);
+		posTime.set(Calendar.HOUR_OF_DAY, posHour);
+		posTime.set(Calendar.MINUTE, posRealMin);
 
-		if (posDay > nowDay || ((posHour * 100 + posRealMin) > (nowHour * 100 + nowMin))) {
+		if (now.before(posTime)) {
 			// not in current month ("posdate>nowdate")
 			if (posMonth == Calendar.JANUARY) {
 				posYear--;
@@ -177,7 +180,7 @@ public class PositionDate {
 				posMonth--;
 				Calendar dummy = (Calendar) dateTime.clone();
 				// noinspection MagicConstant
-				dummy.set(posDay, posMonth, 1);
+				dummy.set(posYear, posMonth, 1);
 				if (dummy.getActualMaximum(Calendar.DAY_OF_MONTH) < posDay) {
 					// Two month old or previous year
 					if (posMonth == 0) {
