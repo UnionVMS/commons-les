@@ -14,6 +14,7 @@ import java.util.*;
 
 public class InmarsatFileHandler {
 	public static final String ERROR_DIR_NAME = "error";
+	public static final String SUSPECT_DIR_NAME = "suspect";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(InmarsatFileHandler.class);
 	private static final byte[] HEADER_PATTERN = ByteBuffer.allocate(4).put((byte) InmarsatDefinition.API_SOH)
@@ -21,10 +22,12 @@ public class InmarsatFileHandler {
 	private static final int PATTERN_LENGTH = HEADER_PATTERN.length;
 	private final Path downloadDir;
 	private final Path errorDir;
+	private final Path suspectDir;
 
 	public InmarsatFileHandler(Path downloadDir) {
 		this.downloadDir = downloadDir;
 		this.errorDir = Paths.get(downloadDir.toString(), ERROR_DIR_NAME);
+		this.suspectDir = Paths.get(downloadDir.toString(), SUSPECT_DIR_NAME);
 	}
 
 	/**
@@ -58,9 +61,8 @@ public class InmarsatFileHandler {
 					output.put(file, inmarsatMessages);
 				} else {
 					LOGGER.error("File is not a valid Inmarsat Message: {} - deleted", file);
-					Files.delete(file);
+					moveFileToDir(file, suspectDir);
 				}
-
 			}
 		}
 

@@ -292,5 +292,15 @@ public class InmarsatFileHandlerTest {
 				Files.exists(Paths.get(tempDir, InmarsatFileHandler.ERROR_DIR_NAME, file1.getFileName().toString())));
 
 	}
+	@Test
+	public void moveFileToSuspect() throws Exception {
+		Files.write(file1, "1".getBytes(), StandardOpenOption.CREATE_NEW);
+		Files.write(file2, "2".getBytes(), StandardOpenOption.CREATE_NEW);
+
+		ifd.moveFileToDir(file1, Paths.get(tempDir, InmarsatFileHandler.SUSPECT_DIR_NAME));
+		assertTrue(
+				Files.exists(Paths.get(tempDir, InmarsatFileHandler.SUSPECT_DIR_NAME, file1.getFileName().toString())));
+
+	}
 
 }
