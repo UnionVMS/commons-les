@@ -60,8 +60,13 @@ public class InmarsatFileHandler {
 					inmarsatMessages = byteToInmMessage(fileBytes, file);
 					output.put(file, inmarsatMessages);
 				} else {
-					LOGGER.error("File is not a valid Inmarsat Message: {} - deleted", file);
-					moveFileToDir(file, suspectDir);
+					if(fileStr.contains("Failed: No message(s).")){
+						LOGGER.error("File is not a valid Inmarsat Message: {} - deleted. Contained :  ", fileStr);
+						Files.deleteIfExists(file);
+					} else {
+						LOGGER.warn("Suspect file detected. Moved to folder suspect. ", fileStr);
+						moveFileToDir(file, suspectDir);
+					}
 				}
 			}
 		}
