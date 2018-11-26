@@ -61,7 +61,7 @@ public class InmarsatFileHandler {
 					output.put(file, inmarsatMessages);
 				} else {
 					if(fileStr.contains("Failed: No message(s).")){
-						LOGGER.error("File is not a valid Inmarsat Message: {} - deleted. Contained :  ", fileStr);
+						LOGGER.error("File is not a valid Inmarsat message -> \"{}\" <- deleted.", fileStr);
 						Files.deleteIfExists(file);
 					} else {
 						LOGGER.warn("Suspect file detected. Moved to folder suspect. ", fileStr);
